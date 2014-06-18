@@ -13,19 +13,23 @@ lxc-create -t download -n $name -- -d fedora -r 20 -a amd64
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
+networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
+IPv4=10.0.3.$cid
 
 sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
-sed -i "s/^#lxc\.network\.ipv4.*/lxc.network.ipv4=10.0.3.$cid/g" $config_path/config
-sed -i 's/^BOOTPROTO=dhcp/#BOOTPROTO=dhcp/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^#BOOTPROTO=none/BOOTPROTO=none/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i "s/^#IPADDR/IPADDR/g" ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^#GATEWAY/GATEWAY/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^#NETMASK/NETMASK/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^#NETWORK/NETWORK/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i "s/^IPADDR.*/IPADDR=10.0.3.$cid/g" ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^GATEWAY.*/GATEWAY=10.0.3.1/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^NETMASK.*/NETMASK=255.255.255.0/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^NETWORK.*/NETWORK=10.0.3.0/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i 's/^DHCP_HOSTNAME/#DHCP_HOSTNAME/g' ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
+echo "IPADDR=$IPv4" >> $networkfile
+echo "GATEWAY=10.0.3.1" >> $networkfile
+echo "NETMASK=255.255.255.0" >> $networkfile
+echo "NETWORK=10.0.3.0" >> $networkfile
+echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
+echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+
+# configure timezone
+cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
+
+# yum: keep the cache
+sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
+
 ./tunnelssh.sh $name $cid
 cd $rootfs_path/etc; rm localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
