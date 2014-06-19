@@ -39,4 +39,6 @@ cd $rootfs_path/etc; rm localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin loc
 ./tunnelssh.sh $name $cid
 
 # make sure the container starts at next boot time
-ln -s /var/lib/lxc/$name/config /etc/lxc/auto/$name
+echo "lxc.start.auto = 1" >> $rootfs_path/../config
+echo "lxc.start.delay = 5" >> $rootfs_path/../config
+
