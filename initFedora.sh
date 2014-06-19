@@ -33,5 +33,10 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 # yum: keep the cache
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
-./tunnelssh.sh $name $cid
 cd $rootfs_path/etc; rm localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
+
+# setup port forwarding from outside
+./tunnelssh.sh $name $cid
+
+# make sure the container starts at next boot time
+ln -s /var/lib/lxc/$name/config /etc/lxc/auto/$name

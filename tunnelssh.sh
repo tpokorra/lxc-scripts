@@ -27,3 +27,5 @@ iptables -t nat -A PREROUTING -p tcp -d ${HostIP} --dport $((4000 + $cid)) -i et
 echo "forwarding ${HostIP}:$((2000 + $cid)) => ${guestip}:22"
 echo "forwarding ${HostIP}:$((4000 + $cid)) => ${guestip}:443"
 echo "forwarding ${HostIP}:$((8000 + $cid)) => ${guestip}:80"
+
+/etc/network/if-post-down.d/iptablessave
