@@ -13,18 +13,9 @@ lxc-create -t download -n $name -- -d debian -r wheezy -a amd64
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
-networkfile=${rootfs_path}/etc/network/interfaces
 IPv4=10.0.3.$cid
 
-echo $name > $rootfs_path/etc/hostname
 echo $IPv4 $name >> $rootfs_path/etc/hosts
-sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
-echo "address $IPv4" >> $networkfile
-echo "netmask 255.255.255.0" >> $networkfile
-echo "network 10.0.3.0" >> $networkfile
-echo "broadcast 10.0.3.255" >> $networkfile
-echo "gateway 10.0.3.1" >> $networkfile
-echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 
 # configure timezone
