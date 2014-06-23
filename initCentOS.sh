@@ -3,13 +3,13 @@
 if [ -z $2 ]
 then
   echo "please call $0 <name of new container> <cid>"
-  echo "   eg. $0 50-fedora20-mymachine 50"
+  echo "   eg. $0 50-centos6-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
 
-lxc-create -t download -n $name -- -d fedora -r 20 -a amd64
+lxc-create -t download -n $name -- -d centos -r 6 -a amd64
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
@@ -24,8 +24,6 @@ echo "NETMASK=255.255.255.0" >> $networkfile
 echo "NETWORK=10.0.3.0" >> $networkfile
 echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-# fix a problem with AppArmor. otherwise you get a SEGV
-echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
 
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
