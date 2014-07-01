@@ -16,6 +16,7 @@ cat nginx.conf.tpl | \
   sed "s/HOSTIP/$HostIP/g" | \
   sed "s/HOSTPORT/80/g" | \
   sed "s/CONTAINERIP/$containerip/g" | \
+  sed "s/CONTAINERID/$cid/g" | \
   sed "s/CONTAINERURL/$url/g" | \
   sed "s/CONTAINERPORT/80/g" \
   > /etc/nginx/conf.d/$name.conf

@@ -1,5 +1,5 @@
 ## Start CONTAINERURL ##
-upstream container  {
+upstream containerCONTAINERID  {
       server CONTAINERIP:CONTAINERPORT;
 }
 
@@ -14,7 +14,7 @@ server {
  
     ## send request back to lbs ##
     location / {
-     proxy_pass  http://container;
+     proxy_pass  http://containerCONTAINERID;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
      proxy_redirect off;
      proxy_buffering off;
