@@ -26,8 +26,9 @@ echo "nameserver "$GATEWAY >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
 
-# setup port forwarding from outside
-./tunnelssh.sh $name $cid
+echo To setup port forwarding from outside, please run:
+echo ./tunnelssh.sh $name $cid
+echo ./initWebproxy.sh $name $cid www.$name.de
 
 # make sure the container starts at next boot time
 echo "lxc.start.auto = 1" >> $rootfs_path/../config
