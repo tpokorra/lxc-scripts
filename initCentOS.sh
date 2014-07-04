@@ -40,7 +40,7 @@ echo "NETMASK=255.255.255.0" >> $networkfile
 echo "NETWORK=10.0.3.0" >> $networkfile
 echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-echo "lxc.mount.entry = tmpfs " rootfs_path "/dev/shm tmpfs defaults 0 0" >> $rootfs_path/../config
+echo "lxc.mount.entry = tmpfs $rootfs_path/dev/shm tmpfs defaults 0 0" >> $rootfs_path/../config
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
