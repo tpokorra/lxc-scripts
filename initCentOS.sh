@@ -25,7 +25,17 @@ then
   autostart=$5
 fi
 
-lxc-create -t download -n $name -- -d $distro -r $release -a $arch
+if [ "$release" == "5" ]
+then
+  arch2=$arch
+  if [ "$arch" == "amd64" ]
+  then
+    $arch2="x86_64"
+  fi
+  lxc-create -n $name -t $distro -- --release=$release --arch=$arch2 || exit 1
+else
+  lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+fi
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
