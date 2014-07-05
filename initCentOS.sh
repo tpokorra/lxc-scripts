@@ -54,16 +54,7 @@ echo "lxc.mount.entry = tmpfs $rootfs_path/dev/shm tmpfs defaults 0 0" >> $rootf
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
-if [ ! -d $hostpath ]
-then
-  mkdir -p $hostpath
-fi
-containerpath="$rootfs_path/var/cache/yum"
-if [ ! -d $containerpath ]
-then
-  mkdir -p $containerpath
-fi
-echo "lxc.mount.entry = $hostpath $containerpath none defaults,bind 0 0" >> $rootfs_path/../config
+./initMount $hostpath $name "/var/cache/yum"
 
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
