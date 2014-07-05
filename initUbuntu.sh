@@ -41,12 +41,13 @@ echo "nameserver "$GATEWAY >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
-./initMount $hostpath $name "/var/cache/apt"
+./initMount.sh $hostpath $name "/var/cache/apt"
 
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
 
 if [ $autostart -eq 1 ]
+then
   echo To setup port forwarding from outside, please run:
   echo ./tunnelssh.sh $name $cid
   echo ./initWebproxy.sh $name $cid www.$name.de

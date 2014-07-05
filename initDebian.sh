@@ -40,7 +40,7 @@ echo "lxc.network.ipv4.gateway="$GATEWAY >> $rootfs_path/../config
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
-./initMount $hostpath $name "/var/cache/apt"
+./initMount.sh $hostpath $name "/var/cache/apt"
 
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
