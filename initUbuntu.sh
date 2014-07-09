@@ -54,7 +54,7 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 if [ $autostart -eq 1 ]
 then
   echo To setup port forwarding from outside, please run:
-  echo ./tunnelssh.sh $name $cid
+  echo ./tunnelport.sh $name $cid 22
   echo ./initWebproxy.sh $name $cid www.$name.de
 
   # make sure the container starts at next boot time
