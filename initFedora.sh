@@ -42,6 +42,8 @@ echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 # fix a problem with AppArmor. otherwise you get a SEGV
 echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
+# fix a problem with seccomp. Machine does not start otherwise
+echo "lxc.seccomp =" >> $rootfs_path/../config
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
