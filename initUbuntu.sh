@@ -25,7 +25,7 @@ then
   autostart=$5
 fi
 
-if [ "$arch" -eq "amd64" ]
+if [[ "$arch" == "amd64" ]]
 then
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 else
