@@ -18,5 +18,7 @@ done
 
 echo "put /etc/iptables.rules
 put /etc/nginx/conf.d/* nginx
-$putcmd"  | sftp $username@$backuphost:$thishost
+put /var/lib/certs/* certs
+$putcmd
+"  | sftp $username@$backuphost:$thishost || echo "problem, did not backup everything!!!"
 
