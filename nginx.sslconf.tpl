@@ -1,10 +1,10 @@
 ## Start CONTAINERURL ##
 upstream containerCONTAINERIDSUBID  {
-      server CONTAINERIP:CONTAINERPORTSUBDIR;
+      server CONTAINERIP:CONTAINERPORT;
 }
 
 server {
-    listen    443 default_server;
+    listen    HOSTIP:HOSTPORT;
     server_name  CONTAINERURL;
  
     ssl on;
@@ -21,7 +21,7 @@ server {
  
     ## send request back to lbs ##
     location / {
-     proxy_pass  http://containerCONTAINERIDSUBID;
+     proxy_pass  http://containerCONTAINERIDSUBID/SUBDIR;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
      proxy_redirect off;
      proxy_buffering off;

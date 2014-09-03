@@ -20,11 +20,11 @@ else
 fi
 
 if [ -z $4 ]; then
-  portandsubdir=80
   cidandsubid=$cid
+  subdir=
 else
   cidandsubid=$cid$4
-  portandsubdir="80/$4"
+  subdir="$4/"
 fi
 
 if [ $port -eq 80 ]; then 
@@ -37,15 +37,15 @@ if [ $port -eq 80 ]; then
     sed "s/CONTAINERPORT/80/g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 else
-  cat nginx.conf.tpl | \
+  cat nginx.sslconf.tpl | \
     sed "s/HOSTIP/$HostIP/g" | \
-    sed "s/HOSTPORT/80/g" | \
+    sed "s/HOSTPORT/$port/g" | \
     sed "s/CONTAINERIP/$containerip/g" | \
     sed "s/CONTAINERIDSUBID/$cidandsubid/g" | \
     sed "s/CONTAINERID/$cid/g" | \
     sed "s/CONTAINERURL/$url/g" | \
-    sed "s#CONTAINERPORTSUBDIR#$cidandsubdir#g" | \
-    sed "s/CONTAINERPORT/$port/g" \
+    sed "s#SUBDIR#$subdir#g" | \
+    sed "s/CONTAINERPORT/80/g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 fi
 mkdir -p /var/log/nginx/log
