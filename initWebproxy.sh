@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z $3 ]; then
+if [ -z $2 ]; then
   echo "call: $0 cid url [subdir]"
   echo "eg: $0 3 www.example.org customer1"
   exit
