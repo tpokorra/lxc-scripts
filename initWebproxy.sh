@@ -1,15 +1,14 @@
 #!/bin/bash
 
 if [ -z $3 ]; then
-  echo "call: $0 containername cid url [subdir]"
-  echo "eg: $0 mybuild03.lbs.solidcharity.com 3 www.example.org customer1"
+  echo "call: $0 cid url [subdir]"
+  echo "eg: $0 3 www.example.org customer1"
   exit
 fi
 
 HostIP=`ifconfig eth0 | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
-name=$1
-cid=$2
-url=$3
+cid=$1
+url=$2
 containerip=10.0.3.$cid
 
 if [ -f /var/lib/certs/$url.crt ]; then
@@ -19,12 +18,12 @@ else
   port=80
 fi
 
-if [ -z $4 ]; then
+if [ -z $3 ]; then
   cidandsubid=$cid
   subdir=
 else
-  cidandsubid=$cid$4
-  subdir="$4/"
+  cidandsubid=$cid$3
+  subdir="$3/"
 fi
 
 if [ $port -eq 80 ]; then 
