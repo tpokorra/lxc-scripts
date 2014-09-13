@@ -55,7 +55,7 @@ if [ $autostart -eq 1 ]
 then
   echo To setup port forwarding from outside, please run:
   echo ./tunnelport.sh $name $cid 22
-  echo ./initWebproxy.sh $name $cid www.$name.de
+  echo ./initWebproxy.sh $cid www.$name.de
 
   # make sure the container starts at next boot time
   echo "lxc.start.auto = 1" >> $rootfs_path/../config

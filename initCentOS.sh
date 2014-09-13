@@ -70,7 +70,7 @@ then
 
   echo To setup port forwarding from outside, please run:
   echo ./tunnelport.sh $name $cid 22
-  echo ./initWebproxy.sh $name $cid www.$name.de
+  echo ./initWebproxy.sh $cid www.$name.de
 else
   # reset the password
   chroot $rootfs_path passwd -d root
