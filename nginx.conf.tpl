@@ -12,7 +12,7 @@ server {
     root   /usr/share/nginx/html;
     index  index.html index.htm;
  
-    ## send request back to lbs ##
+    ## send request back to container ##
     location / {
      proxy_pass  http://containerCONTAINERID;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;

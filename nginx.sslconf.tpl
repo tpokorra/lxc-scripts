@@ -4,6 +4,12 @@ upstream containerCONTAINERIDSUBID  {
 }
 
 server {
+    listen HOSTIP:80;
+    server_name CONTAINERURL;
+    rewrite ^(.*) https://$server_name$1 permanent;
+}
+
+server {
     listen    HOSTIP:HOSTPORT;
     server_name  CONTAINERURL;
  
@@ -19,7 +25,7 @@ server {
 
     client_max_body_size 30M;
  
-    ## send request back to lbs ##
+    ## send request back to container ##
     location / {
      proxy_pass  http://containerCONTAINERIDSUBID/SUBDIR;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
