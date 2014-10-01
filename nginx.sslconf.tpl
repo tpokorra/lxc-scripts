@@ -6,7 +6,7 @@ upstream containerCONTAINERIDSUBID  {
 server {
     listen HOSTIP:80;
     server_name CONTAINERURL;
-    rewrite ^(.*) https://$server_name$1 permanent;
+    return 301 https://$host$request_uri;
 }
 
 server {
