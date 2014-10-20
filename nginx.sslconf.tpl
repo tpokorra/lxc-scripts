@@ -17,6 +17,7 @@ server {
     ssl_certificate /var/lib/certs/CONTAINERURL.crt;  
     ssl_certificate_key /var/lib/certs/CONTAINERURL.key;
     ssl_session_cache shared:SSL:10m;
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don’t use SSLv3 ref: POODLE
 
     access_log  /var/log/nginx/log/CONTAINERURL.access.log;
     error_log  /var/log/nginx/log/CONTAINERURL.error.log;
