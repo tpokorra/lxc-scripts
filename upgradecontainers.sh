@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "updating the host " `hostname -f`
+apt-get update && apt-get -y upgrade
+
 for d in /var/lib/lxc/*
 do
   echo "updating " `basename $d`
