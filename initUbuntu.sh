@@ -51,6 +51,10 @@ hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
 
+# install openssh-server
+chroot $rootfs_path apt-get update
+chroot $rootfs_path apt-get install -y openssh-server
+
 if [ $autostart -eq 1 ]
 then
   echo To setup port forwarding from outside, please run:
