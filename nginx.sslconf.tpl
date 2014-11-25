@@ -6,7 +6,7 @@ upstream containerCONTAINERIDSUBID  {
 server {
     listen HOSTIP:80;
     server_name CONTAINERURL;
-    return 301 https://$host$request_uri;
+    return 302 https://$host$request_uri;
 }
 
 server {
