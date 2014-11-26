@@ -55,6 +55,9 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 # yum: keep the cache
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
+# install openssh-server
+chroot $rootfs_path yum -y install openssh-server
+
 if [ $autostart -eq 1 ]
 then
   # make sure the container starts at next boot time
