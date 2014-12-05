@@ -14,10 +14,10 @@ do
   elif [ -f $rootfs/etc/lsb-release ]
   then
     # Ubuntu
-    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade'
+    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade --force-yes'
   elif [ -f $rootfs/etc/debian_version ]
   then
     # Debian
-    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade'
+    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade --force-yes'
   fi
 done
