@@ -6,7 +6,11 @@ if [ -z $2 ]; then
   exit
 fi
 
-HostIP=`ifconfig eth0 | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
+interface=eth0
+# interface can be eth0, or p10p1, etc
+interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
+
+HostIP=`ifconfig $interface | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
 cid=$1
 url=$2
 containerip=10.0.3.$cid
