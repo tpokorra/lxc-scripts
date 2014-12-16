@@ -73,7 +73,7 @@ then
   echo "lxc.start.delay = 5" >> $rootfs_path/../config
 
   echo To setup port forwarding from outside, please run:
-  echo ./tunnelport.sh $name $cid 22
+  echo ./tunnelport.sh $cid 22
   echo ./initWebproxy.sh $cid www.$name.de
 else
   # reset the password
