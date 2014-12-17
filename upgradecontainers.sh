@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "updating the host " `hostname -f`
-apt-get update && apt-get -y upgrade
+apt-get update && apt-get -y upgrade --force-yes
 
 for d in /var/lib/lxc/*
 do
