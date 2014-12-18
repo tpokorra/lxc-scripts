@@ -2,7 +2,7 @@
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 6> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is 20> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-fedora20-mymachine 50"
   exit 1
 fi
@@ -67,6 +67,7 @@ then
   echo To setup port forwarding from outside, please run:
   echo ./tunnelport.sh $cid 22
   echo ./initWebproxy.sh $cid www.$name.de
+  echo To set the password: chroot $rootfs_path passwd root
 else
   # reset the password
   chroot $rootfs_path passwd -d root
