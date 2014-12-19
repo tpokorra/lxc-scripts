@@ -68,7 +68,6 @@ then
   echo ./tunnelport.sh $cid 22
   echo ./initWebproxy.sh $cid www.$name.de
   echo To set the password: chroot $rootfs_path passwd root
-else
-  # reset the password
-  chroot $rootfs_path passwd -d root
 fi
+
+echo To set the password of the user root, run: chroot $rootfs_path passwd root

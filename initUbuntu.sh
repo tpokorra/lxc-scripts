@@ -65,3 +65,5 @@ then
   echo "lxc.start.auto = 1" >> $rootfs_path/../config
   echo "lxc.start.delay = 5" >> $rootfs_path/../config
 fi
+
+echo To set the password of the user ubuntu, run: chroot $rootfs_path passwd ubuntu
