@@ -32,6 +32,8 @@ config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
 IPv4=10.0.3.$cid
 
+ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
+
 sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
 sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
 echo "IPADDR=$IPv4" >> $networkfile
@@ -63,11 +65,15 @@ then
   # make sure the container starts at next boot time
   echo "lxc.start.auto = 1" >> $rootfs_path/../config
   echo "lxc.start.delay = 5" >> $rootfs_path/../config
-
-  echo To setup port forwarding from outside, please run:
-  echo ./tunnelport.sh $cid 22
-  echo ./initWebproxy.sh $cid www.$name.de
-  echo To set the password: chroot $rootfs_path passwd root
 fi
 
+echo To setup port forwarding from outside, please run:
+echo ./tunnelport.sh $cid 22
+echo ./initWebproxy.sh $cid www.$name.de
+echo
 echo To set the password of the user root, run: chroot $rootfs_path passwd root
+echo
+echo To start the container, run: lxc-start -d -n $name
+echo
+echo To connect to the container locally, run: ssh root@$IPv4
+

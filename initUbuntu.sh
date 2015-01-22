@@ -38,6 +38,8 @@ networkfile=${rootfs_path}/etc/network/interfaces
 IPv4=10.0.3.$cid
 GATEWAY=10.0.3.1
 
+ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
+
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
@@ -57,13 +59,19 @@ chroot $rootfs_path apt-get install -y openssh-server
 
 if [ $autostart -eq 1 ]
 then
-  echo To setup port forwarding from outside, please run:
-  echo ./tunnelport.sh $cid 22
-  echo ./initWebproxy.sh $cid www.$name.de
-
   # make sure the container starts at next boot time
   echo "lxc.start.auto = 1" >> $rootfs_path/../config
   echo "lxc.start.delay = 5" >> $rootfs_path/../config
 fi
 
+echo To setup port forwarding from outside, please run:
+echo ./tunnelport.sh $cid 22
+echo ./initWebproxy.sh $cid www.$name.de
+echo
 echo To set the password of the user ubuntu, run: chroot $rootfs_path passwd ubuntu
+echo
+echo To start the container, run: lxc-start -d -n $name
+echo
+echo To connect to the container locally, run: ssh ubuntu@$IPv4
+echo                 then to become root, run: sudo su 
+
