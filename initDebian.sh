@@ -51,6 +51,9 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 chroot $rootfs_path apt-get update
 chroot $rootfs_path apt-get install -y openssh-server
 
+# drop root password completely
+chroot $rootfs_path passwd -d root
+
 if [ $autostart -eq 1 ]
 then
   # make sure the container starts at next boot time
