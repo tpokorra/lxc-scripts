@@ -61,6 +61,10 @@ echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
 if [ "$release" == "7" ]
 then
   echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
+
+  # see http://serverfault.com/questions/658052/systemd-journal-in-debian-jessie-lxc-container-eats-100-cpu
+  echo "lxc.kmsg = 0" >> $rootfs_path/../config
+  #sed -i "s/ConditionPathExists/#ConditionPathExists/g" $rootfs_path/lib/systemd/system/getty@.service
 fi
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
