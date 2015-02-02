@@ -46,6 +46,10 @@ echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
 # fix a problem with seccomp. Machine does not start otherwise
 echo "lxc.seccomp =" >> $rootfs_path/../config
+# fix some problems with journald
+echo "lxc.kmsg = 0" >> $rootfs_path/../config
+echo "lxc.autodev = 1" >> $rootfs_path/../config
+echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
