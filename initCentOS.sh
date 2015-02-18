@@ -64,7 +64,9 @@ then
 
   # see http://serverfault.com/questions/658052/systemd-journal-in-debian-jessie-lxc-container-eats-100-cpu
   echo "lxc.kmsg = 0" >> $rootfs_path/../config
-  #sed -i "s/ConditionPathExists/#ConditionPathExists/g" $rootfs_path/lib/systemd/system/getty@.service
+  sed -i "s/ConditionPathExists/#ConditionPathExists/g" $rootfs_path/lib/systemd/system/getty@.service
+  # see https://wiki.archlinux.org/index.php/Lxc-systemd
+  echo "lxc.autodev = 1" >> $rootfs_path/../config
 fi
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
