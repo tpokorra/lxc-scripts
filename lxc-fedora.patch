@@ -1,0 +1,16 @@
+--- /usr/share/lxc/templates/lxc-fedora.orig	2015-02-24 07:33:20.288395841 +0100
++++ /usr/share/lxc/templates/lxc-fedora	2015-02-24 07:33:59.004394032 +0100
+@@ -813,6 +813,13 @@
+         PKG_LIST="${PKG_LIST} db4-utils"
+     fi
+ 
++    if [[ ${release} -ge 21 ]]
++    then
++        # Since Fedora 21, a separate fedora-repos package is needed.
++        # Before, the information was conained in fedora-release.
++        PKG_LIST="${PKG_LIST} fedora-repos"
++    fi
++
+     DOWNLOAD_OK=no
+ 
+     # We're splitting the old loop into two loops plus a directory retrival.

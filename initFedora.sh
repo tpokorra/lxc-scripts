@@ -25,7 +25,17 @@ then
   autostart=$5
 fi
 
-lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+if [[ "$release" == "21" ]]
+then
+  if [[ "$arch" == "amd64" ]]
+  then
+    arch="x86_64"
+  fi
+  # there is no template available at https://jenkins.linuxcontainers.org/view/LXC/view/LXC%20Templates/job/lxc-template-fedora/
+  lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
+else
+  lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+fi
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
