@@ -1,5 +1,5 @@
---- /usr/share/lxc/templates/lxc-fedora.orig	2015-02-24 07:33:20.288395841 +0100
-+++ /usr/share/lxc/templates/lxc-fedora	2015-02-24 07:33:59.004394032 +0100
+--- a/lxc-fedora	2015-02-24 07:33:20.288395841 +0100
++++ b/lxc-fedora	2015-02-24 07:33:59.004394032 +0100
 @@ -813,6 +813,13 @@
          PKG_LIST="${PKG_LIST} db4-utils"
      fi
