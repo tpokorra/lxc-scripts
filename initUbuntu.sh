@@ -40,6 +40,9 @@ GATEWAY=10.0.3.1
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
+#drop the line with 127.0.1.1  $name
+cat $rootfs_path/etc/hosts | grep -v $name > $rootfs_path/etc/hosts.new
+mv $rootfs_path/etc/hosts.new $rootfs_path/etc/hosts
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
