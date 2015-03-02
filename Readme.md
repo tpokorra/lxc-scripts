@@ -7,6 +7,7 @@ CheatSheet for my LXC scripts
 ---------------------------------
 
 * Initialise the host IPTables so that they will be survive a reboot: `~/scripts/initIPTables.sh`
+* Small fixes to the LXC system for CentOS7 and Fedora containers: `~/scripts/initLXC.sh`
 * Create a machine (with networking etc): `~/scripts/initFedora.sh $name $id`
 * machines are created in `/var/lib/lxc/$name`, see the file `config` and the directory `rootfs`
 * Start a machine: `lxc-start --name $name`
