@@ -61,6 +61,8 @@ echo "lxc.kmsg = 0" >> $rootfs_path/../config
 echo "lxc.autodev = 1" >> $rootfs_path/../config
 echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
 
+echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
+
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
 ~/scripts/initMount.sh $hostpath $name "/var/cache/yum"
