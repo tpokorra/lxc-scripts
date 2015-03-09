@@ -84,6 +84,14 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 # yum: keep the cache
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
+if [ "$release" == "5" ]
+then
+  for f in $rootfs_path/etc/yum.repos.d/*.repo
+  do
+    sed -i 's/Source/SRPMS/g' $f
+  done
+fi
+
 # install openssh-server
 chroot $rootfs_path yum -y install openssh-server
 
