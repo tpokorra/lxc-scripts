@@ -27,6 +27,11 @@ fi
 
 if [ "$release" == "5" ]
 then
+  if [ -z `which yum` ]
+  then
+    echo "please activate the universe repository and run: apt-get install yum"
+    exit -1
+  fi
   arch2=$arch
   if [ "$arch" == "amd64" ]
   then
