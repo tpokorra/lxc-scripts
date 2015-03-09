@@ -30,7 +30,7 @@ then
   arch2=$arch
   if [ "$arch" == "amd64" ]
   then
-    $arch2="x86_64"
+    arch2="x86_64"
   fi
   lxc-create -n $name -t $distro -- --release=$release --arch=$arch2 || exit 1
 else
