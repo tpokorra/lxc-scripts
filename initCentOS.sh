@@ -90,6 +90,10 @@ then
   do
     sed -i 's/Source/SRPMS/g' $f
   done
+
+  # make sure we only install rpm packages for the specified architecture.
+  # see https://blog.nexcess.net/2012/07/19/64-bit-centos-installing-32-bit-packages/
+  echo "multilib_policy=best" >> $rootfs_path/etc/yum.conf
 fi
 
 # install openssh-server
