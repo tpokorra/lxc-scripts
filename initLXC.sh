@@ -9,3 +9,9 @@ sed -i "s/lxc.cap.drop = mac_admin mac_override setfcap setpcap/lxc.cap.drop = m
 # fix a problem of Fedora 21, see https://bugzilla.redhat.com/show_bug.cgi?id=1176634
 # patching /usr/share/lxc/templates/lxc-fedora
 patch -p1 -d /usr/share/lxc/templates/ < lxc-fedora.patch
+
+# create a key pair for ssh into the container as root
+if [ ! -f /root/.ssh/id_rsa ]
+then
+  ssh-keygen -t rsa -C "root@localhost"
+fi
