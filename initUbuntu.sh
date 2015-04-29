@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source lib.sh
+SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
