@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source lib.sh
+
 if [ -z $2 ]
 then
   echo "please call $0 <name of new container> <cid> <release, default is 6> <arch, default is amd64> <autostart, default is 1>"
@@ -102,20 +104,9 @@ chroot $rootfs_path yum -y install openssh-server
 # drop root password completely
 chroot $rootfs_path passwd -d root
 
-if [ $autostart -eq 1 ]
-then
-  # make sure the container starts at next boot time
-  echo "lxc.start.auto = 1" >> $rootfs_path/../config
-  echo "lxc.start.delay = 5" >> $rootfs_path/../config
-fi
+install_public_keys $rootfs_path
 
-echo To setup port forwarding from outside, please run:
-echo ./tunnelport.sh $cid 22
-echo ./initWebproxy.sh $cid www.$name.de
-echo
-echo To set the password of the user root, run: chroot $rootfs_path passwd root
-echo
-echo To start the container, run: lxc-start -d -n $name
-echo
-echo To connect to the container locally, run: ssh root@$IPv4
+configure_autostart $autostart $rootfs_path
+
+info $cid $name $IPv4
 
