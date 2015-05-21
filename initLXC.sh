@@ -15,3 +15,6 @@ if [ ! -f /root/.ssh/id_rsa ]
 then
   ssh-keygen -t rsa -C "root@localhost"
 fi
+
+# create a new, unique Diffie-Hellman group, to fight the Logjam attack: https://weakdh.org/sysadmin.html
+openssl dhparam -out /var/lib/certs/dhparams.pem 2048
