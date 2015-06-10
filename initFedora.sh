@@ -28,7 +28,7 @@ then
   autostart=$5
 fi
 
-if [[ "$release" == "21" ]]
+if [[ "$release" == "21" || "$release" == "22" ]]
 then
   if [[ "$arch" == "amd64" ]]
   then
