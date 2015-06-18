@@ -6,23 +6,13 @@ if [ -z $2 ]; then
   exit
 fi
 
-interface=eth0
-# interface can be eth0, or p10p1, etc
-if [ -f /etc/network/interfaces ]
-then
-  interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
-fi
-
-# Ubuntu
-HostIP=`ifconfig ${interface} | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
-if [ -z $HostIP ]
-then
-  # Fedora
-  HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
-fi
+interface=$(getOutwardInterface)
+HostIP=$(getIPOfInterface $interface)
+interfaceBridge=$(getBridgeInterface)
+bridgeAddress=$(getIPOfInterface $interfaceBridge)
 
 cid=$1
-guestip=10.0.3.$cid
+guestip=${bridgeAddress:0: -2}.$cid
 port=$2
 remove=0
 

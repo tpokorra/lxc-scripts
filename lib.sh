@@ -42,3 +42,36 @@ IPv4=$3
   echo "To connect to the container locally, run: eval \`ssh-agent\`; ssh-add; ssh root@$IPv4"
 
 }
+
+function getOutwardInterface {
+  local interface=eth0
+  # interface can be eth0, or p10p1, etc
+  if [ -f /etc/network/interfaces ]
+  then
+    interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
+  fi
+  echo $interface
+}
+
+function getBridgeInterface {
+  # interface can be lxcbr0 (Ubuntu) or virbr0 (Fedora)
+  local interface=lxcbr0
+  local interfaces=`ifconfig | grep $interface`
+  if [ -z $interfaces ]
+  then
+    interface=virbr0
+  fi
+  echo $interface
+}
+
+function getIPOfInterface {
+interface=$1
+  # Ubuntu
+  local HostIP=`ifconfig ${interface} | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
+  if [ -z $HostIP ]
+  then
+    # Fedora
+    HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
+  fi
+  echo $HostIP
+}

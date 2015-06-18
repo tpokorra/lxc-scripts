@@ -48,18 +48,22 @@ fi
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-IPv4=10.0.3.$cid
+bridgeInterface=$(getBridgeInterface)
+bridgeAddress=$(getIPOfInterface $bridgeInterface)
+networkaddress=${bridgeAddress:0: -2}
+IPv4=$networkaddress.$cid
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
 sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
 sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
 echo "IPADDR=$IPv4" >> $networkfile
-echo "GATEWAY=10.0.3.1" >> $networkfile
+echo "GATEWAY=$networkaddress.1" >> $networkfile
 echo "NETMASK=255.255.255.0" >> $networkfile
-echo "NETWORK=10.0.3.0" >> $networkfile
-echo "nameserver 10.0.3.1" >  $rootfs_path/etc/resolv.conf
+echo "NETWORK=$networkaddress.0" >> $networkfile
+echo "nameserver $networkaddress.1" >  $rootfs_path/etc/resolv.conf
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+#echo "lxc.network.ipv4.gateway=$networkaddress.1" >> $rootfs_path/../config
 if [ "$release" == "6" ]
 then
   echo "lxc.mount.entry = tmpfs $rootfs_path/dev/shm tmpfs defaults 0 0" >> $rootfs_path/../config
