@@ -17,4 +17,5 @@ then
 fi
 
 # create a new, unique Diffie-Hellman group, to fight the Logjam attack: https://weakdh.org/sysadmin.html
+mkdir -p /var/lib/certs
 openssl dhparam -out /var/lib/certs/dhparams.pem 2048
