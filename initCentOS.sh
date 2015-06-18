@@ -79,7 +79,7 @@ fi
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/yum"
-~/scripts/initMount.sh $hostpath $name "/var/cache/yum"
+$SCRIPTSPATH/initMount.sh $hostpath $name "/var/cache/yum"
 
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
