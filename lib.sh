@@ -57,7 +57,7 @@ function getBridgeInterface {
   # interface can be lxcbr0 (Ubuntu) or virbr0 (Fedora)
   local interface=lxcbr0
   local interfaces=`ifconfig | grep $interface`
-  if [ -z $interfaces ]
+  if [ -z "$interfaces" ]
   then
     interface=virbr0
   fi
@@ -68,7 +68,7 @@ function getIPOfInterface {
 interface=$1
   # Ubuntu
   local HostIP=`ifconfig ${interface} | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
-  if [ -z $HostIP ]
+  if [ -z "$HostIP" ]
   then
     # Fedora
     HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
