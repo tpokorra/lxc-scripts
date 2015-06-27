@@ -6,6 +6,9 @@ if [ -z $2 ]; then
   exit
 fi
 
+SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+source $SCRIPTSPATH/lib.sh
+
 interface=$(getOutwardInterface)
 HostIP=$(getIPOfInterface $interface)
 interfaceBridge=$(getBridgeInterface)
