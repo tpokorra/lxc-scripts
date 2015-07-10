@@ -25,4 +25,9 @@ else
   # Fedora
   # https://fedoraproject.org/wiki/How_to_edit_iptables_rules
   # iptables service loads from and saves to /etc/sysconfig/iptables
+
+  # somehow these lines are missing. this way the port forwarding works from outside
+  iptables -I FORWARD -i virbr0 -j ACCEPT
+  iptables -I FORWARD -o virbr0 -j ACCEPT
+  iptables-save > /etc/sysconfig/iptables
 fi
