@@ -38,8 +38,10 @@ fi
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/network/interfaces
-IPv4=10.0.3.$cid
-GATEWAY=10.0.3.1
+bridgeInterface=$(getBridgeInterface)
+bridgeAddress=$(getIPOfInterface $bridgeInterface)
+networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
+IPv4=$networkAddress.$cid
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
@@ -48,9 +50,10 @@ cat $rootfs_path/etc/hosts | grep -v $name > $rootfs_path/etc/hosts.new
 mv $rootfs_path/etc/hosts.new $rootfs_path/etc/hosts
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
+sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-echo "lxc.network.ipv4.gateway="$GATEWAY >> $rootfs_path/../config
-echo "nameserver "$GATEWAY >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
+echo "lxc.network.ipv4.gateway="$bridgeAddress >> $rootfs_path/../config
+echo "nameserver "$bridgeAddress >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
