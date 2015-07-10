@@ -3,19 +3,36 @@
 for d in /var/lib/lxc/*
 do
   rootfs=$d/rootfs
+  name=`basename $d`
   if [ -f $rootfs/etc/redhat-release ]
   then
     # CentOS
-    echo -e `basename $d` "\t" `cat $rootfs/etc/redhat-release`
+    version="`cat $rootfs/etc/redhat-release`"
   elif [ -f $rootfs/etc/lsb-release ]
   then
     # Ubuntu
     . $rootfs/etc/lsb-release
-    echo -e `basename $d` "\t" $DISTRIB_DESCRIPTION
+    version="$DISTRIB_DESCRIPTION"
   elif [ -f $rootfs/etc/debian_version ]
   then
     # Debian
-    echo -e `basename $d` "\tDebian" `cat $rootfs/etc/debian_version`
+    version="Debian `cat $rootfs/etc/debian_version`"
+  fi
+
+  if [ -z "`ps xaf | grep "lxc-start -d -n $name" | grep -v grep`" ]
+  then
+    state="stopped"
+  else
+    state="running"
+  fi
+
+  if [ -z "`cat /var/lib/lxc/$name/config | grep lxc.start.auto | grep 1`" ]
+  then
+    autostart="yes"
+  else
+    autostart="no"
   fi
   
+  echo -e $name "\t" $state "\t" $autostart "\t" $version
 done
+
