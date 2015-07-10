@@ -5,14 +5,14 @@ source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 6> <arch, default is amd64> <autostart, default is 1>"
-  echo "   eg. $0 50-centos6-mymachine 50"
+  echo "please call $0 <name of new container> <cid> <release, default is 7> <arch, default is amd64> <autostart, default is 1>"
+  echo "   eg. $0 50-centos-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
 distro="centos"
-release="6"
+release="7"
 if [ ! -z $3 ]
 then
   release=$3
