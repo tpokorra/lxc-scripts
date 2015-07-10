@@ -28,12 +28,12 @@ then
   autostart=$5
 fi
 
-if [[ "$arch" == "amd64" ]]
+if [ ! -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]
 then
-  lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
-else
-  lxc-create -n $name -t $distro -- --release=$release --arch=$arch || exit 1
+  mkdir -p /usr/share/keyrings
+  wget http://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg -O /usr/share/keyrings/ubuntu-archive-keyring.gpg
 fi
+lxc-create -t ubuntu -n $name -- --release=$release --arch=$arch || exit 1
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name

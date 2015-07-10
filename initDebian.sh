@@ -27,7 +27,9 @@ then
   autostart=$5
 fi
 
-lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+# some problems with the downloaded images on CentOS7 host
+#lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+lxc-create -t debian -n $name -- -r $release -a $arch || exit 1
 
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
