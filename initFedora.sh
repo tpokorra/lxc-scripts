@@ -15,7 +15,10 @@ distro="fedora"
 release="22"
 if [ ! -z $3 ]
 then
-  release=$3
+  if [[ "$3" != "rawhide" ]]
+  then
+    release=$3
+  fi
 fi
 arch="amd64"
 if [ ! -z $4 ]
