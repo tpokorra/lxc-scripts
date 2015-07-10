@@ -11,6 +11,8 @@ rootfs_path=$1
   # install the public key for local root login
   if [ -f /root/.ssh/id_rsa.pub ]
   then
+    # add a newline
+    echo >> $rootfs_path/root/.ssh/authorized_keys
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     chmod -R 600 $rootfs_path/root/.ssh/authorized_keys
   fi
