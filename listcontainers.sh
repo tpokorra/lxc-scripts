@@ -32,7 +32,9 @@ do
   else
     autostart="no"
   fi
+
+  IPv4=`cat /var/lib/lxc/$name/config | grep "lxc.network.ipv4=" | awk -F= '{ print $2 }' | awk -F/ '{ print $1 }'`
   
-  echo -e $name "\t" $state "\t" $autostart "\t" $version
+  echo -e $name "\t" $IPv4 "\t" $state "\t" $autostart "\t" $version
 done
 
