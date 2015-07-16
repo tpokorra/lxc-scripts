@@ -23,7 +23,8 @@ do
     version="Debian `cat $rootfs/etc/debian_version`"
   fi
 
-  if [ -z "`ps xaf | grep "lxc-start -d -n $name" | grep -v grep`" ]
+  lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $name" | grep -v grep`
+  if [ -z "$lxcprocess" ]
   then
     state="stopped"
   else
