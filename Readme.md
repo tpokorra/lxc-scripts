@@ -17,7 +17,8 @@ CheatSheet for my LXC scripts
 * Initialise the host IPTables so that they will be survive a reboot: `~/scripts/initIPTables.sh`
 * Small fixes to the LXC system for CentOS7 and Fedora containers, and create ssh keys: `~/scripts/initLXC.sh`
 * Create a container (with networking etc): `~/scripts/initFedora.sh $name $id`
- * similar for CentOS, Debian, and Ubuntu containers
+ * Call the script without parameters to see additional parameters, eg to specify the version of the OS etc: `~/scripts/initFedora.sh`
+ * There are scripts for creating Fedora, CentOS, Debian, and Ubuntu containers
 * Containers are created in `/var/lib/lxc/$name`, see the file `config` and the directory `rootfs`
 * Start a container: `lxc-start --name $name`
 * Start a container without console: `lxc-start -d --name $name`
