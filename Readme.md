@@ -6,7 +6,7 @@ These scripts are useful to manage your own server, with several Linux container
 Installation
 ------------
 
-* Either clone this code repository (`cd ~; git clone https://github.com/tpokorra/lxc-scripts.git scripts`)
+* Either clone this code repository: `cd ~; git clone https://github.com/tpokorra/lxc-scripts.git scripts`
 * Or install a package from LBS: https://lbs.solidcharity.com/package/tpokorra/lbs/lxc-scripts
  * There is a lxc-scripts package for CentOS7, Fedora 22, and Ubuntu 14.04, with instructions how to install the package
  * To make things easier, I usually create a symbolic link: `cd ~; ln -s /usr/share/lxc-scripts scripts`
