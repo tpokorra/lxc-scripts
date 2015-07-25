@@ -33,9 +33,9 @@ do
 
   if [ -z "`cat /var/lib/lxc/$name/config | grep lxc.start.auto | grep 1`" ]
   then
-    autostart="yes"
-  else
     autostart="no"
+  else
+    autostart="yes"
   fi
 
   IPv4=`cat /var/lib/lxc/$name/config | grep "lxc.network.ipv4=" | awk -F= '{ print $2 }' | awk -F/ '{ print $1 }'`
