@@ -10,6 +10,14 @@ errors=
 for d in /var/lib/lxc/*
 do
   container=`basename $d`
+
+  lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $container" | grep -v grep`
+  if [ -z "$lxcprocess" ]
+  then
+    # stopped. do not upgrade, potential problems with mysql updates etc.
+    continue
+  fi
+
   echo
   echo
   echo "======================="
@@ -32,17 +40,17 @@ do
     fi
   elif [[ "$OS" == "Ubuntu" ]]
   then
-    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
+    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
   elif [[ "$OS" == "Debian" ]]
   then
-    chroot $rootfs bash -c 'apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
+    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
   else
     echo "unknown operating system in container " $container
     exit -1
   fi
   if [ $error -eq 1 ]
   then
-    errors="$errorsError upgrading container $container\n"
+    errors="${errors}Error upgrading container $container\n"
   fi
 done
 
