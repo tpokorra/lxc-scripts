@@ -77,3 +77,33 @@ interface=$1
   fi
   echo $HostIP
 }
+
+function getOSOfContainer {
+rootfs=$1
+  if [ -f $rootfs/etc/redhat-release ]
+  then
+    # CentOS
+    version="`cat $rootfs/etc/redhat-release`"
+  elif [ -f $rootfs/etc/lsb-release ]
+  then
+    # Ubuntu
+    . $rootfs/etc/lsb-release
+    version="$DISTRIB_DESCRIPTION"
+  elif [ -f $rootfs/etc/debian_version ]
+  then
+    # Debian
+    version="Debian `cat $rootfs/etc/debian_version`"
+  fi
+
+  # remove release and Linux
+  tmp="${version/Linux/}"
+  tmp="${tmp/release/}"
+  OS=`echo $tmp | awk '{print $1}'`
+  OSRelease=`echo $tmp | awk '{print $2}'`
+  if [[ "$OS" == "Ubuntu" ]]
+  then
+    OSRelease=`echo $OSRelease | awk -F. '{print $1 "." $2}'`
+  else
+    OSRelease=`echo $OSRelease | awk -F. '{print $1}'`
+  fi
+}

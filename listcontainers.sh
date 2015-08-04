@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+source $SCRIPTSPATH/lib.sh
+
 tmpfile=/tmp/listcontainers.txt
 echo "--" > $tmpfile
 echo -e "Name\t IP\t State\t Autostart\t Guest OS" >> $tmpfile
@@ -8,20 +11,9 @@ for d in /var/lib/lxc/*
 do
   rootfs=$d/rootfs
   name=`basename $d`
-  if [ -f $rootfs/etc/redhat-release ]
-  then
-    # CentOS
-    version="`cat $rootfs/etc/redhat-release`"
-  elif [ -f $rootfs/etc/lsb-release ]
-  then
-    # Ubuntu
-    . $rootfs/etc/lsb-release
-    version="$DISTRIB_DESCRIPTION"
-  elif [ -f $rootfs/etc/debian_version ]
-  then
-    # Debian
-    version="Debian `cat $rootfs/etc/debian_version`"
-  fi
+
+  # version=getOSOfContainer
+  getOSOfContainer $rootfs
 
   lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $name" | grep -v grep`
   if [ -z "$lxcprocess" ]
