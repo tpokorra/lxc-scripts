@@ -6,14 +6,18 @@ if [ -z $2 ]; then
   exit
 fi
 
-interface=eth0
-# interface can be eth0, or p10p1, etc
-interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
+SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+source $SCRIPTSPATH/lib.sh
 
-HostIP=`ifconfig $interface | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
+interface=$(getOutwardInterface)
+HostIP=$(getIPOfInterface $interface)
+interfaceBridge=$(getBridgeInterface)
+bridgeAddress=$(getIPOfInterface $interfaceBridge)
+
 cid=$1
+containerip=${bridgeAddress:0: -2}.$cid
+
 url=$2
-containerip=10.0.3.$cid
 
 if [ -f /var/lib/certs/$url.crt ]; then
   port=443
