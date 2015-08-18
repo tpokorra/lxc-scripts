@@ -11,6 +11,11 @@ Installation
  * There is a lxc-scripts package for CentOS7, Fedora 22, and Ubuntu 14.04, with instructions how to install the package
  * To make things easier, I usually create a symbolic link: `cd ~; ln -s /usr/share/lxc-scripts scripts`
 
+After installing the package, run these scripts for initializing the firewall and some fixes for the LXC templates:
+
+    /usr/share/lxc-scripts/initLXC.sh
+    /usr/share/lxc-scripts/initIPTables.sh
+
 CheatSheet for my LXC scripts
 ---------------------------------
 
