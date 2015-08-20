@@ -3,6 +3,15 @@
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
+if [ -z "$2" ]
+then
+  echo "optional: can pass sender and recipient email address to send an email when there are update errors"
+  echo "sample call: $0 errors@example.org admin@example.org"
+  echo
+fi
+errorsSender=$1
+errorsRecipient=$2
+
 echo "updating the host " `hostname -f`
 apt-get update && apt-get -y upgrade --force-yes
 
@@ -62,5 +71,18 @@ then
   echo "problems upgrading containers:"
   echo "=============================="
   echo -e $errors
+
+  if [ ! -z "$errorsRecipient" ]
+  then
+    getOSOfContainer "/"
+    if [[ "$OS" == "CentOS" ]]
+    then
+      echo -e "problems upgrading containers on host `hostname -f`: \n $errors" | mail -s "problems upgrading containers on host `hostname -f`" -a "From: $errorsSender" "$errorsRecipient"
+    elif [[ "$OS" == "Ubuntu" ]]
+    then
+      echo -e "problems upgrading containers on host `hostname -f`: \n $errors" | mail -s "problems upgrading containers on host `hostname -f`" -r $errorsSender "$errorsRecipient"
+    fi
+  fi
+
   exit -1
 fi
