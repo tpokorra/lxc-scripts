@@ -32,3 +32,5 @@ CheatSheet for my LXC scripts
 * List all containers, with running state and IP address: `lxc-ls -f`
  * alternatively, there is this script: `~/scripts/listcontainers.sh` which works even on CentOS where python3 is not (yet) available
  * this also shows the OS of the container
+ * ~/scripts/listcontainers.sh running: shows only running containers
+ * ~/scripts/listcontainers.sh stopped: shows only stopped containers
