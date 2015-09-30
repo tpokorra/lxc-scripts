@@ -9,11 +9,12 @@ fi
 hostpath=$1
 containername=$2
 localpath=$3
-containerpath=/var/lib/lxc/$containername/rootfs$localpath
+relativepath=$containername/rootfs$localpath
+containerpath=/var/lib/lxc/$relativepath
 
 mkdir -p $hostpath
 rm -Rf $containerpath
 mkdir -p $containerpath
 
-echo "lxc.mount.entry = $hostpath $containerpath none defaults,bind 0 0" >> /var/lib/lxc/$containername/config
+echo "lxc.mount.entry = $hostpath $relativepath none defaults,bind 0 0" >> /var/lib/lxc/$containername/config
 
