@@ -9,8 +9,8 @@ fi
 hostpath=$1
 containername=$2
 localpath=$3
-relativepath=$containername/rootfs$localpath
-containerpath=/var/lib/lxc/$relativepath
+relativepath=${localpath:1}
+containerpath=/var/lib/lxc/$containername/rootfs/$relativepath
 
 mkdir -p $hostpath
 rm -Rf $containerpath
