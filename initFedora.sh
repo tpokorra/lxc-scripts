@@ -5,7 +5,7 @@ source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 22> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is 23> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-fedora-mymachine 50"
   exit 1
 fi
@@ -84,7 +84,7 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
 # install openssh-server
-chroot $rootfs_path yum -y install openssh-server
+chroot $rootfs_path dnf -y install openssh-server
 
 # drop root password completely
 chroot $rootfs_path passwd -d root
