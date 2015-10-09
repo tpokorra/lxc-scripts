@@ -12,7 +12,7 @@ fi
 name=$1
 cid=$2
 distro="fedora"
-release="22"
+release="23"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]
@@ -31,7 +31,7 @@ then
   autostart=$5
 fi
 
-if [[ "$release" == "21" || "$release" == "22" ]]
+if [[ "$release" == "21" || "$release" == "22" || "$release" == "23" ]]
 then
   if [[ "$arch" == "amd64" ]]
   then
