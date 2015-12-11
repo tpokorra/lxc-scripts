@@ -27,10 +27,6 @@ then
   autostart=$5
 fi
 
-# some problems with the downloaded images on CentOS7 host
-#lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
-lxc-create -t debian -n $name -- -r $release -a $arch || exit 1
-
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/network/interfaces
@@ -38,6 +34,10 @@ bridgeInterface=$(getBridgeInterface)
 bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
+
+# some problems with the downloaded images on CentOS7 host
+#lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
+lxc-create -t debian -n $name -- -r $release -a $arch || exit 1
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 

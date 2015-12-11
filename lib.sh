@@ -75,6 +75,11 @@ interface=$1
     # Fedora
     HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
   fi
+  if [ -z $HostIP ]
+  then
+    echo "Problem: cannot find an IP address for interface " $interface
+    exit -1
+  fi
   echo $HostIP
 }
 
