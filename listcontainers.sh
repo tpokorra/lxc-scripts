@@ -16,6 +16,12 @@ echo "--" >> $tmpfile
 for d in /var/lib/lxc/*
 do
   rootfs=$d/rootfs
+
+  if [ ! -d $rootfs ]
+  then
+    continue
+  fi
+
   name=`basename $d`
 
   # version=getOSOfContainer
