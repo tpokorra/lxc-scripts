@@ -30,6 +30,12 @@ rootfs_path=$2
   fi
 }
 
+die() {
+msg=$1
+   echo "$msg"
+   exit -1
+}
+
 function info {
 cid=$1
 name=$2
@@ -63,6 +69,11 @@ function getBridgeInterface {
   then
     interface=virbr0
   fi
+  local interfaces=`ifconfig | grep $interface`
+  if [ -z "$interfaces" ]
+  then
+    return -1
+  fi
   echo $interface
 }
 
@@ -75,10 +86,9 @@ interface=$1
     # Fedora
     HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
   fi
-  if [ -z $HostIP ]
+  if [ -z "$HostIP" ]
   then
-    echo "Problem: cannot find an IP address for interface " $interface
-    exit -1
+    return -1
   fi
   echo $HostIP
 }
