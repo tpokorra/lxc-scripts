@@ -4,9 +4,12 @@ function install_public_keys {
 rootfs_path=$1
 
   # install the public keys for the host machine to the container as well
-  mkdir -p $rootfs_path/root/.ssh
-  cat /root/.ssh/authorized_keys >> $rootfs_path/root/.ssh/authorized_keys
-  chmod -R 600 $rootfs_path/root/.ssh/authorized_keys
+  if [ -f /root/.ssh/authorized_keys ]
+  then
+    mkdir -p $rootfs_path/root/.ssh
+    cat /root/.ssh/authorized_keys >> $rootfs_path/root/.ssh/authorized_keys
+    chmod -R 600 $rootfs_path/root/.ssh/authorized_keys
+  fi
 
   # install the public key for local root login
   if [ -f /root/.ssh/id_rsa.pub ]
@@ -28,6 +31,12 @@ rootfs_path=$2
     echo "lxc.start.auto = 1" >> $rootfs_path/../config
     echo "lxc.start.delay = 5" >> $rootfs_path/../config
   fi
+}
+
+die() {
+msg=$1
+   echo "$msg"
+   exit -1
 }
 
 function info {
@@ -63,6 +72,11 @@ function getBridgeInterface {
   then
     interface=virbr0
   fi
+  local interfaces=`ifconfig | grep $interface`
+  if [ -z "$interfaces" ]
+  then
+    return -1
+  fi
   echo $interface
 }
 
@@ -74,6 +88,10 @@ interface=$1
   then
     # Fedora
     HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
+  fi
+  if [ -z "$HostIP" ]
+  then
+    return -1
   fi
   echo $HostIP
 }

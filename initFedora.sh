@@ -31,6 +31,14 @@ then
   autostart=$5
 fi
 
+rootfs_path=/var/lib/lxc/$name/rootfs
+config_path=/var/lib/lxc/$name
+networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
+bridgeInterface=$(getBridgeInterface)
+bridgeAddress=$(getIPOfInterface $bridgeInterface)
+networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
+IPv4=$networkAddress.$cid
+
 if [[ "$release" == "21" || "$release" == "22" || "$release" == "23" ]]
 then
   if [[ "$arch" == "amd64" ]]
@@ -42,14 +50,6 @@ then
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
-
-rootfs_path=/var/lib/lxc/$name/rootfs
-config_path=/var/lib/lxc/$name
-networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-bridgeInterface=$(getBridgeInterface)
-bridgeAddress=$(getIPOfInterface $bridgeInterface)
-networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
-IPv4=$networkAddress.$cid
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 

@@ -28,13 +28,6 @@ then
   autostart=$5
 fi
 
-if [ ! -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]
-then
-  mkdir -p /usr/share/keyrings
-  wget http://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg -O /usr/share/keyrings/ubuntu-archive-keyring.gpg
-fi
-lxc-create -t ubuntu -n $name -- --release=$release --arch=$arch || exit 1
-
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/network/interfaces
@@ -42,6 +35,13 @@ bridgeInterface=$(getBridgeInterface)
 bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
+
+if [ ! -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]
+then
+  mkdir -p /usr/share/keyrings
+  wget http://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg -O /usr/share/keyrings/ubuntu-archive-keyring.gpg
+fi
+lxc-create -t ubuntu -n $name -- --release=$release --arch=$arch || exit 1
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 

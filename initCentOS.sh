@@ -28,6 +28,14 @@ then
   autostart=$5
 fi
 
+rootfs_path=/var/lib/lxc/$name/rootfs
+config_path=/var/lib/lxc/$name
+networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
+bridgeInterface=$(getBridgeInterface) || die "cannot find the bridge interface"
+bridgeAddress=$(getIPOfInterface $bridgeInterface) || die "cannot find the address for the bridge $bridgeInterface"
+networkAddress=$(echo $bridgeAddress | cut -f1,2,3 -d".")
+IPv4=$networkAddress.$cid
+
 if [ "$release" == "5" ]
 then
   if [ -z `which yum` ]
@@ -44,14 +52,6 @@ then
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
-
-rootfs_path=/var/lib/lxc/$name/rootfs
-config_path=/var/lib/lxc/$name
-networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
-bridgeInterface=$(getBridgeInterface)
-bridgeAddress=$(getIPOfInterface $bridgeInterface)
-networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
-IPv4=$networkAddress.$cid
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
