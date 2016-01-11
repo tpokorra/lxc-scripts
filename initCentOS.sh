@@ -36,7 +36,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface) || die "cannot find the addre
 networkAddress=$(echo $bridgeAddress | cut -f1,2,3 -d".")
 IPv4=$networkAddress.$cid
 
-if [ "$release" == "5" ]
+if ( [ "$release" == "5" ] ) || ( [ "$release" == "7" ] && [ "$arch" == "i686" ] )
 then
   if [ -z `which yum` ]
   then
@@ -48,7 +48,12 @@ then
   then
     arch2="x86_64"
   fi
-  lxc-create -n $name -t $distro -- --release=$release --arch=$arch2 || exit 1
+  if ( [ "$release" == "7" ] && [ "$arch" == "i686" ] )
+  then
+    lxc-create -n $name -t $distro -- --repo=http://mirror.centos.org/altarch/7/os/i386/ --release=$release --arch=i686 || exit 1
+  else
+    lxc-create -n $name -t $distro -- --release=$release --arch=$arch2 || exit 1
+  fi
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
