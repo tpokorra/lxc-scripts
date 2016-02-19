@@ -15,6 +15,7 @@ rootfs_path=$1
   if [ -f /root/.ssh/id_rsa.pub ]
   then
     # add a newline
+    mkdir -p $rootfs_path/root/.ssh
     echo >> $rootfs_path/root/.ssh/authorized_keys
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     chmod -R 600 $rootfs_path/root/.ssh/authorized_keys
