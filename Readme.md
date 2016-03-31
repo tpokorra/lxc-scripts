@@ -35,3 +35,13 @@ CheatSheet for my LXC scripts
  * ~/scripts/listcontainers.sh running: shows only running containers
  * ~/scripts/listcontainers.sh stopped: shows only stopped containers
 * Stop all containers: `~/scripts/stopall.sh`
+
+Snapshots:
+* are stored in `/var/lib/lxcsnaps/`
+* first stop the container: `lxc-stop -n $name`
+* then create the snapshot: `lxc-snapshot -n $name`
+ * create with comment: `echo "mycomment" > /tmp/comment && lxc-snapshot -n $name -c /tmp/comment && rm /tmp/comment`
+* list all snapshots: `lxc-snapshot -LC -n $name`
+* restore a snapshot: `lxc-snapshot -n $name -r snap@`
+* create a new container from snapshot: `lxc-snapshot -n $name -r snap@ new$name`
+* delete a snapshot: `lxc-snapshot -n $name -d snap@`
