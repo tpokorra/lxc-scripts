@@ -40,7 +40,7 @@ Snapshots:
 * are stored in `/var/lib/lxcsnaps/`
 * first stop the container: `lxc-stop -n $name`
 * then create the snapshot: `lxc-snapshot -n $name`
- * create with comment: `echo "mycomment" > /tmp/comment && lxc-snapshot -n $name -c /tmp/comment && rm /tmp/comment`
+ * create with comment: `echo "mycomment" > /tmp/comment && lxc-snapshot -n $name -c /tmp/comment && rm -f /tmp/comment`
 * list all snapshots: `lxc-snapshot -LC -n $name`
 * restore a snapshot: `lxc-snapshot -n $name -r snap@`
 * create a new container from snapshot: `lxc-snapshot -n $name -r snap@ new$name`
