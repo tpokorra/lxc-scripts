@@ -7,6 +7,7 @@ server {
     listen HOSTIP:80;
     server_name CONTAINERURL;
     return 302 https://$host$request_uri;
+    #location / { root /tmp/CONTAINERPORT/challenge; }
 }
 
 server {
