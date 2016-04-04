@@ -46,13 +46,19 @@ challengedir=/tmp/$cid/challenge/.well-known/acme-challenge/
   sed -i "s~#location / { root /tmp/.*}~location / { root /tmp/$cid/challenge; }~g" $domainconf
   mkdir -p $challengedir
   service nginx reload
-  python acme_tiny.py --account-key ./account.key --csr ./$domain.csr --acme-dir $challengedir > ./$domain.crt
-  rm -Rf $challengedir
-   
+  error=0
+  python acme_tiny.py --account-key ./account.key --csr ./$domain.csr --acme-dir $challengedir > ./$domain.crt || error=1
+  rm -Rf /tmp/$cid
+
   sed -i "s~#return 302~return 302~g" $domainconf
   sed -i "s~location / { root /tmp/~#location / { root /tmp/~g" $domainconf
-  cp -f $domain.key /var/lib/certs/$domain.key
-  cat $domain.crt lets-encrypt-x3-cross-signed.pem > /var/lib/certs/$domain.crt
+
+  if [ $error -ne 1 ]
+  then
+    cp -f $domain.key /var/lib/certs/$domain.key
+    cat $domain.crt lets-encrypt-x3-cross-signed.pem > /var/lib/certs/$domain.crt
+  fi
+
   service nginx reload
   cd -
 }
