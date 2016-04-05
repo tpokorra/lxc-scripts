@@ -29,6 +29,34 @@ then
 fi
 domain=$1
 
+function need_new_certificate {
+domainconf=$1
+domain=`basename $domainconf`
+domain=${domain:0:-5}
+posdash=`expr index "$domain" "-"`
+cid=${domain:0:posdash-1}
+domain=${domain:posdash}
+need_new=0
+
+crtfile=/var/lib/certs/$domain.crt
+
+if [ ! -f $crtfile ]
+then
+  return
+fi
+
+enddate=`openssl x509 -enddate -noout -in $crtfile | cut -d= -f2-`
+# show date in readable format, eg. 2016-07-03
+#date -d "$enddate" '+%F'
+# convert to timestamp for comparison
+enddate=`date -d "$enddate" '+%s'`
+threeweeksfromnow=`date -d "+21 days" '+%s'`
+if [ $enddate -lt $threeweeksfromnow ]
+then
+  need_new=1
+fi
+}
+
 function new_letsencrypt_certificate {
 domainconf=$1
 domain=`basename $domainconf`
@@ -69,7 +97,11 @@ then
   do
     if [ "`cat $f | grep challenge`" != "" ]
     then
-      new_letsencrypt_certificate $f
+      need_new_certificate $f
+      if [ $need_new -eq 1 ]
+      then
+        new_letsencrypt_certificate $f
+      fi
     fi
   done
 else
