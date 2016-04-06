@@ -2,6 +2,9 @@
 
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 
+# version,OS,OSRelease=getOSOfContainer
+getOSOfContainer /
+
 # There is a problem with Fedora containers, that systemd cannot be upgraded inside the container.
 sed -i "s/^lxc.cap.drop = setfcap/#lxc.cap.drop = setfcap/g" /usr/share/lxc/config/fedora.common.conf
 
@@ -35,4 +38,20 @@ fi
 if [ ! -f /etc/cron.d/letsencrypt ]
 then
   echo "5 8 * * 6 root cd /usr/share/lxc-scripts && ./letsencrypt.sh all" > /etc/cron.d/letsencrypt
+fi
+
+if [[ "$OS" == "CentOS" || "$OS" == "Fedora" ]]
+then
+  systemctl enable crond || exit -1
+  systemctl start crond || exit -1
+elif [[ "$OS" == "Debian" || "$OS" == "Ubuntu" ]]
+then
+  if [[ "$OS" == "Debian" && $OSRelease -ge 8 ]]
+  then
+    systemctl enable cron || exit -1
+    systemctl start cron || exit -1
+  else
+    service cron start || exit -1
+    update-rc.d cron defaults || exit -1
+  if
 fi
