@@ -1,5 +1,7 @@
 #!/bin/bash
 
+max_certificates_per_run=5
+
 if [ ! -d ~/letsencrypt ]
 then
   mkdir ~/letsencrypt
@@ -57,6 +59,7 @@ then
 fi
 }
 
+declare -A domain_counter
 function new_letsencrypt_certificate {
 domainconf=$1
 domain=`basename $domainconf`
@@ -65,6 +68,19 @@ posdash=`expr index "$domain" "-"`
 cid=${domain:0:posdash-1}
 domain=${domain:posdash}
 challengedir=/tmp/$cid/challenge/.well-known/acme-challenge/
+
+  # TODO this does not support toplevel domains like .co.uk, etc
+  maindomain=`echo $domain | awk -F. '{print $(NF-1) "." $NF}'`
+  maindomain=${maindomain/./_}
+  counter=${domain_counter[$maindomain]}
+  domain_counter[$maindomain]=$((${domain_counter[$maindomain]}+1))
+  if [ ${domain_counter[$maindomain]} -gt $max_certificates_per_run ]
+  then
+    # To avoid hitting the limit of new certificates within a week per domain, we delay the certificate for the next run
+    echo "delaying new certificate for $domain"
+    return
+  fi
+
   echo "new certificate for $domain"
 
   cd ~/letsencrypt
