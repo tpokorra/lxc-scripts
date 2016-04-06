@@ -30,3 +30,9 @@ then
   mkdir -p /var/lib/certs
   openssl dhparam -out /var/lib/certs/dhparams.pem 2048
 fi
+
+# install a cronjob that checks the expiry date of ssl certificates and installs a new letsencrypt certificate
+if [ ! -f /etc/cron.d/letsencrypt ]
+then
+  echo "5 8 * * 6 root cd /usr/share/lxc-scripts && ./letsencrypt.sh all" > /etc/cron.d/letsencrypt
+fi
