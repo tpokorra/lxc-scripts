@@ -42,8 +42,14 @@ fi
 
 if [[ "$OS" == "CentOS" || "$OS" == "Fedora" ]]
 then
-  systemctl enable crond || exit -1
-  systemctl start crond || exit -1
+  if [[ "$OS" == "CentOS" && "$OSRelease" -lt 7 ]]
+  then
+    service crond start
+    chkconfig crond on
+  else
+    systemctl enable crond || exit -1
+    systemctl start crond || exit -1
+  fi
 elif [[ "$OS" == "Debian" || "$OS" == "Ubuntu" ]]
 then
   if [[ "$OS" == "Debian" && $OSRelease -ge 8 ]]
