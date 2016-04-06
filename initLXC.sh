@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
-
+source $SCRIPTSPATH/lib.sh
 # version,OS,OSRelease=getOSOfContainer
 getOSOfContainer /
 
@@ -59,5 +59,5 @@ then
   else
     service cron start || exit -1
     update-rc.d cron defaults || exit -1
-  if
+  fi
 fi
