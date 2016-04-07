@@ -57,7 +57,7 @@ then
     systemctl enable cron || exit -1
     systemctl start cron || exit -1
   else
-    service cron start || exit -1
-    update-rc.d cron defaults || exit -1
+    service cron start
+    update-rc.d cron defaults
   fi
 fi
