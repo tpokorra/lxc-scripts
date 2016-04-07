@@ -12,7 +12,7 @@ fi
 name=$1
 cid=$2
 distro="fedora"
-release="24"
+release="23"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]
@@ -39,7 +39,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [[ "$release" == "21" || "$release" == "22" || "$release" == "23" || "$release" == "24" ]]
+if [[ "$release" == "24" ]]
 then
   if [[ "$arch" == "amd64" ]]
   then
