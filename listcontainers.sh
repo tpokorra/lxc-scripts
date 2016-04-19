@@ -1,6 +1,10 @@
 #!/bin/bash
 
-SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+SCRIPTSPATH=/usr/share/lxc-scripts
+if [[ "$0" == "./listcontainers.sh" ]]
+then
+  SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
+fi
 source $SCRIPTSPATH/lib.sh
 
 show="all"

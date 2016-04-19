@@ -40,6 +40,11 @@ then
   echo "5 8 * * 6 root cd /usr/share/lxc-scripts && ./letsencrypt.sh all" > /etc/cron.d/letsencrypt
 fi
 
+if [ ! -f /usr/bin/lc -a -f /usr/share/lxc-scripts/listcontainers.sh ]
+then
+  ln -s /usr/share/lxc-scripts/listcontainers.sh /usr/bin/lc
+fi
+
 if [[ "$OS" == "CentOS" || "$OS" == "Fedora" ]]
 then
   if [[ "$OS" == "CentOS" && "$OSRelease" -lt 7 ]]
