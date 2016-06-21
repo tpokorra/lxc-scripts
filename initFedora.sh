@@ -46,7 +46,7 @@ then
     arch="x86_64"
   fi
   # there is no template available at https://jenkins.linuxcontainers.org/view/LXC/view/LXC%20Templates/job/lxc-template-fedora/
-  lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
+  LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
@@ -84,7 +84,7 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
 # install openssh-server
-chroot $rootfs_path dnf -y install openssh-server
+LANG=C chroot $rootfs_path dnf -y install openssh-server
 
 # drop root password completely
 chroot $rootfs_path passwd -d root
