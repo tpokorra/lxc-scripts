@@ -13,12 +13,17 @@ sed -i "s/^lxc.cap.drop = setfcap/#lxc.cap.drop = setfcap/g" /usr/share/lxc/conf
 sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap setpcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
 sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
 
-# fix a problem of Fedora 21, see https://bugzilla.redhat.com/show_bug.cgi?id=1176634
-# patching /usr/share/lxc/templates/lxc-fedora
+# patching /usr/share/lxc/templates/lxc-fedora for older LXC packages
 search="Since Fedora 21, a separate fedora-repos package is needed."
 if [[ -z `cat /usr/share/lxc/templates/lxc-fedora | grep "$search"` ]]
 then
   patch -p1 -d /usr/share/lxc/templates/ < $SCRIPTSPATH/lxc-fedora.patch
+fi
+# use dnf instead of yum
+search="install python rpm yum"
+if [[ -z `cat /usr/share/lxc/templates/lxc-fedora | grep "$search"` ]]
+then
+  patch -p1 -d /usr/share/lxc/templates/ < $SCRIPTSPATH/lxc-fedora_dnf.patch
 fi
 
 # create a key pair for ssh into the container as root
