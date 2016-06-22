@@ -42,7 +42,7 @@ fi
 # install a cronjob that checks the expiry date of ssl certificates and installs a new letsencrypt certificate
 if [ ! -f /etc/cron.d/letsencrypt ]
 then
-  echo "5 8 * * 6 root cd /usr/share/lxc-scripts && ./letsencrypt.sh all" > /etc/cron.d/letsencrypt
+  echo "5 8 * * 6 root PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin cd /usr/share/lxc-scripts && ./letsencrypt.sh all" > /etc/cron.d/letsencrypt
 fi
 
 if [ ! -f /usr/bin/lc -a -f /usr/share/lxc-scripts/listcontainers.sh ]

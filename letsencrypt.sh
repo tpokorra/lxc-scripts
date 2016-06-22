@@ -53,6 +53,7 @@ enddate=`openssl x509 -enddate -noout -in $crtfile | cut -d= -f2-`
 # convert to timestamp for comparison
 enddate=`date -d "$enddate" '+%s'`
 threeweeksfromnow=`date -d "+21 days" '+%s'`
+echo "certificate valid till " `date +%Y-%m-%d -d @$enddate` $domain
 if [ $enddate -lt $threeweeksfromnow ]
 then
   need_new=1
