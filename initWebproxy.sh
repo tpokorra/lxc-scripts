@@ -19,11 +19,13 @@ containerip=${bridgeAddress:0: -2}.$cid
 
 url=$2
 
+port=443
 if [ -f /var/lib/certs/$url.crt ]; then
-  port=443
+  generateCert=0
 else
-  echo "cannot find ssl certificate at /var/lib/certs/$url.crt, therefore configuring http on port 80"
-  port=80
+  touch /var/lib/certs/$url.crt
+  touch /var/lib/certs/$url.key
+  generateCert=1
 fi
 
 if [ -z $3 ]; then
@@ -55,5 +57,17 @@ else
     sed "s/CONTAINERPORT/80/g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 fi
+if [ $generateCert -eq 1 ]
+then
+  # disable ssl for the moment, the certificate is not valid yet
+  sed -i "s/ssl/#ssl/g" /etc/nginx/conf.d/$cid-$url.conf
+fi
 mkdir -p /var/log/nginx/log
 service nginx reload
+
+if [ $generateCert -eq 1 ]
+then
+  ./letsencrypt.sh $cid-$url || exit -1
+  sed -i "s/#ssl/ssl/g" /etc/nginx/conf.d/$cid-$url.conf
+  service nginx reload
+fi
