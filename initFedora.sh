@@ -86,6 +86,12 @@ sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 # install openssh-server
 LANG=C chroot $rootfs_path dnf -y install openssh-server
 
+if [ $release -ge 24 ]
+then
+  # need to install the locales
+  dnf -y install glibc-locale-source
+fi
+
 # drop root password completely
 chroot $rootfs_path passwd -d root
 
