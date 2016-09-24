@@ -89,7 +89,7 @@ LANG=C chroot $rootfs_path dnf -y install openssh-server
 if [ $release -ge 24 ]
 then
   # need to install the locales
-  dnf -y install glibc-locale-source
+  LANG=C chroot $rootfs_path dnf -y install glibc-locale-source
 fi
 
 # drop root password completely
