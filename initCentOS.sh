@@ -70,10 +70,6 @@ echo "nameserver $bridgeAddress" >  $rootfs_path/etc/resolv.conf
 sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 #echo "lxc.network.ipv4.gateway=$networkaddress.1" >> $rootfs_path/../config
-if [ "$release" == "6" ]
-then
-  echo "lxc.mount.entry = tmpfs $rootfs_path/dev/shm tmpfs defaults 0 0" >> $rootfs_path/../config
-fi
 echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
 
 if [ "$release" == "7" ]
