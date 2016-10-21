@@ -20,11 +20,17 @@ for d in /var/lib/lxc/*
 do
   container=`basename $d`
 
+  # lxc 1.x
   lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $container" | grep -v grep`
   if [ -z "$lxcprocess" ]
   then
-    # stopped. do not upgrade, potential problems with mysql updates etc.
-    continue
+    # lxc 2.x
+    lxcprocess=`ps xaf | grep "lxc $container" | grep -v grep`
+    if [ -z "$lxcprocess" ]
+    then
+      # stopped. do not upgrade, potential problems with mysql updates etc.
+      continue
+    fi
   fi
 
   echo
