@@ -93,8 +93,9 @@ then
   echo "export LANG=C" >> /$rootfs_path/etc/profile
 fi
 
-# drop root password completely
-chroot $rootfs_path passwd -d root
+# set a random root password. we are using the public key anyway
+pwd=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c20`
+echo $pwd | chroot $rootfs_path passwd root --stdin
 
 install_public_keys $rootfs_path
 
