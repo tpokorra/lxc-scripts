@@ -5,14 +5,14 @@ source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is trusty> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is xenial> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-ubuntu-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
 distro="ubuntu"
-release="trusty"
+release="xenial"
 if [ ! -z $3 ]
 then
   release=$3
