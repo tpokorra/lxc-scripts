@@ -108,9 +108,10 @@ fi
 # install openssh-server
 chroot $rootfs_path yum -y install openssh-server
 
-# set a random root password. we are using the public key anyway
-pwd=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c20`
-echo $pwd | chroot $rootfs_path passwd root --stdin
+# drop root password completely
+chroot $rootfs_path passwd -d root
+# disallow auth with null password
+sed -i 's/nullok//g' $rootfs_path/etc/pam.d/system-auth
 
 install_public_keys $rootfs_path
 
