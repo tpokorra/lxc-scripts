@@ -5,7 +5,7 @@ source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 24> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is 25> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-fedora-mymachine 50"
   exit 1
 fi
