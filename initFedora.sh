@@ -12,7 +12,7 @@ fi
 name=$1
 cid=$2
 distro="fedora"
-release="24"
+release="25"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]
