@@ -22,7 +22,7 @@ do
 
   # if the container does not have autostart enabled, don't upgrade it
   # we don't want to upgrade temporary or development containers
-  if [ -z "`cat /var/lib/lxc/$name/config | grep lxc.start.auto | grep 1`" ]
+  if [ -z "`cat /var/lib/lxc/$container/config | grep lxc.start.auto | grep 1`" ]
   then
     continue
   fi
