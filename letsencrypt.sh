@@ -68,7 +68,7 @@ domain=${domain:0:-5}
 posdash=`expr index "$domain" "-"`
 cid=${domain:0:posdash-1}
 domain=${domain:posdash}
-challengedir=/tmp/$cid/challenge/.well-known/acme-challenge/
+challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
 
   # TODO this does not support toplevel domains like .co.uk, etc
   maindomain=`echo $domain | awk -F. '{print $(NF-1) "." $NF}'`
@@ -88,15 +88,15 @@ challengedir=/tmp/$cid/challenge/.well-known/acme-challenge/
   openssl genrsa 4096 > $domain.key
   openssl req -new -sha256 -key $domain.key -subj "/CN=$domain" > $domain.csr
   sed -i "s~return 302~#return 302~g" $domainconf
-  sed -i "s~#location / { root /tmp/.*}~location / { root /tmp/$cid/challenge; }~g" $domainconf
+  sed -i "s~#location / { root /var/lib/certs/tmp/.*}~location / { root /var/lib/certs/tmp/$cid/challenge; }~g" $domainconf
   mkdir -p $challengedir
   service nginx reload
   error=0
   python acme_tiny.py --account-key ./account.key --csr ./$domain.csr --acme-dir $challengedir > ./$domain.crt || error=1
-  rm -Rf /tmp/$cid
+  rm -Rf /var/lib/certs/tmp/$cid
 
   sed -i "s~#return 302~return 302~g" $domainconf
-  sed -i "s~location / { root /tmp/~#location / { root /tmp/~g" $domainconf
+  sed -i "s~location / { root /var/lib/certs/tmp/~#location / { root /var/lib/certs/tmp/~g" $domainconf
 
   if [ $error -ne 1 ]
   then
