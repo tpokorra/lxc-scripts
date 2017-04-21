@@ -88,7 +88,7 @@ challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
   openssl genrsa 4096 > $domain.key
   openssl req -new -sha256 -key $domain.key -subj "/CN=$domain" > $domain.csr
   sed -i "s~return 302~#return 302~g" $domainconf
-  sed -i "s~#location / { root /var/lib/certs/tmp/.*}~location / { root /var/lib/certs/tmp/$cid/challenge; }~g" $domainconf
+  sed -i "s~#location / { root .*/tmp/.*}~location / { root /var/lib/certs/tmp/$cid/challenge; }~g" $domainconf
   mkdir -p $challengedir
   service nginx reload
   error=0
