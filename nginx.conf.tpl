@@ -1,6 +1,6 @@
 ## Start CONTAINERURL ##
 server {
-    listen       HOSTPORT;
+    listen       HOSTIP:HOSTPORT;
     server_name  CONTAINERURL;
  
     access_log  /var/log/nginx/log/CONTAINERURL.access.log;
