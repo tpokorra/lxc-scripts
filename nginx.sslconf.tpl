@@ -1,20 +1,15 @@
 ## Start CONTAINERURL ##
-upstream containerCONTAINERIDSUBID  {
-      server CONTAINERIP:CONTAINERPORT;
-}
-
 server {
-    listen HOSTIP:80;
+    listen 80;
     server_name CONTAINERURL;
     return 302 https://$host$request_uri;
     #location / { root /var/lib/certs/tmp/CONTAINERPORT/challenge; }
 }
 
 server {
-    listen    HOSTIP:HOSTPORT;
+    listen 443 ssl;
     server_name  CONTAINERURL;
  
-    ssl on;
     ssl_certificate /var/lib/certs/CONTAINERURL.crt;  
     ssl_certificate_key /var/lib/certs/CONTAINERURL.key;
     ssl_session_cache shared:SSL:10m;
@@ -34,7 +29,7 @@ server {
  
     ## send request back to container ##
     location / {
-     proxy_pass  http://containerCONTAINERIDSUBID/SUBDIR;
+     proxy_pass  http://CONTAINERIP:CONTAINERPORT/SUBDIR;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
      proxy_redirect off;
      proxy_buffering off;

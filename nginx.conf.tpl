@@ -1,10 +1,6 @@
 ## Start CONTAINERURL ##
-upstream containerCONTAINERID  {
-      server CONTAINERIP:CONTAINERPORT;
-}
-
 server {
-    listen       HOSTIP:HOSTPORT;
+    listen       HOSTPORT;
     server_name  CONTAINERURL;
  
     access_log  /var/log/nginx/log/CONTAINERURL.access.log;
@@ -14,7 +10,7 @@ server {
  
     ## send request back to container ##
     location / {
-     proxy_pass  http://containerCONTAINERID;
+     proxy_pass  http://CONTAINERIP:CONTAINERPORT;
      proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
      proxy_redirect off;
      proxy_buffering off;
