@@ -39,7 +39,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [[ "$release" == "26" ]]
+if [ $release -ge 25 ]
 then
   if [[ "$arch" == "amd64" ]]
   then
