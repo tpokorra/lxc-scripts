@@ -5,14 +5,14 @@ source $SCRIPTSPATH/lib.sh
 
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 25> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is 26> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-fedora-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
 distro="fedora"
-release="25"
+release="26"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]
@@ -45,7 +45,7 @@ then
   then
     arch="x86_64"
   fi
-  # there is no template available at https://jenkins.linuxcontainers.org/view/LXC/view/LXC%20Templates/job/lxc-template-fedora/
+  # there is no template available at https://jenkins.linuxcontainers.org/view/LXC/view/LXC%20templates/job/lxc-template-fedora/
   LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
