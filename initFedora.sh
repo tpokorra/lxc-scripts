@@ -141,6 +141,8 @@ then
   lxc-attach -n $name --keep-env -- dnf -y install glibc-locale-source glibc-all-langpacks
 fi
 
+lxc-stop -n $name
+
 # drop root password completely
 chroot $rootfs_path passwd -d root
 # disallow auth with null password
