@@ -39,7 +39,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [ $release -ge 25 ]
+if [ $release -ge 27 ]
 then
   if [[ "$arch" == "amd64" ]]
   then
@@ -53,13 +53,54 @@ fi
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
-sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
-sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
-echo "IPADDR=$IPv4" >> $networkfile
-echo "GATEWAY=$bridgeAddress" >> $networkfile
-echo "NETMASK=255.255.255.0" >> $networkfile
-echo "NETWORK=$networkAddress.0" >> $networkfile
-echo "nameserver $bridgeAddress" >  $rootfs_path/etc/resolv.conf
+if [ ! -f $rootfs_path/etc/sysconfig/network ]
+then
+  cat > $rootfs_path/etc/sysconfig/network << FINISH
+NETWORKING=yes
+HOSTNAME=$name
+BOOTPROTO=static
+FINISH
+else
+  sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
+fi
+
+if [[ "$http_proxy" != "" ]]
+then
+  proxyhostandport=`echo $http_proxy | awk -F/ '{ print $3 }' | awk -F@ '{ print $2 }'`
+  proxyuser=`echo $http_proxy | awk -F/ '{ print $3 }' | awk -F@ '{ print $1 }' | awk -F: '{ print $1 }'`
+  proxypwd=`echo $http_proxy | awk -F/ '{ print $3 }' | awk -F@ '{ print $1 }' | awk -F: '{ print $2 }'`
+  echo "proxy=http://$proxyhostandport" >> $rootfs_path/etc/dnf/dnf.conf
+  echo "proxy_username=$proxyuser" >> $rootfs_path/etc/dnf/dnf.conf
+  echo "proxy_password=$proxypwd" >> $rootfs_path/etc/dnf/dnf.conf
+fi
+
+
+if [ ! -f $networkfile ]
+then
+  cat > $networkfile << FINISH
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+HOSTNAME=`hostname`
+DHCP_HOSTNAME=`hostname`
+NM_CONTROLLED=no
+TYPE=Ethernet
+MTU=
+IPADDR=$IPv4
+GATEWAY=$bridgeAddress
+NETMASK=255.255.255.0
+NETWORK=$networkAddress.0
+DNS1=$bridgeAddress
+FINISH
+else
+  sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
+  echo "IPADDR=$IPv4" >> $networkfile
+  echo "GATEWAY=$bridgeAddress" >> $networkfile
+  echo "NETMASK=255.255.255.0" >> $networkfile
+  echo "NETWORK=$networkAddress.0" >> $networkfile
+  echo "DNS1=$bridgeAddress" >>  $networkfile
+fi
+
 sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
 echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 # fix a problem with AppArmor. otherwise you get a SEGV
@@ -80,17 +121,24 @@ $SCRIPTSPATH/initMount.sh $hostpath $name "/var/cache/yum"
 # configure timezone
 cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin localtime; cd -
 
-# yum: keep the cache
-sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
+# dnf: keep the cache
+sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/dnf/dnf.conf
+
+# use default locale
+echo "export LANG=C" >> $rootfs_path/etc/profile
 
 # install openssh-server
-LANG=C chroot $rootfs_path dnf -y install openssh-server
+lxc-start -d -n $name
+
+# need to wait after start, otherwise dnf will not get a connection
+sleep 10
+
+lxc-attach -n $name --keep-env -- dnf -y install openssh-server
 
 if [ $release -ge 24 ]
 then
   # need to install the locales
-  LANG=C chroot $rootfs_path dnf -y install glibc-locale-source glibc-all-langpacks
-  echo "export LANG=C" >> /$rootfs_path/etc/profile
+  lxc-attach -n $name --keep-env -- dnf -y install glibc-locale-source glibc-all-langpacks
 fi
 
 # drop root password completely
