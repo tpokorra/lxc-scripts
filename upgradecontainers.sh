@@ -48,18 +48,14 @@ do
   rootfs=$d/rootfs
   # version,OS,OSRelease=getOSOfContainer
   getOSOfContainer $rootfs
+  name=`basename $d`
   error=0
   if [[ "$OS" == "CentOS" ]]
   then
-    chroot $rootfs bash -c 'yum -y update || exit -1' || error=1
+    (lxc-attach -n $name -- yum -y update ) || error=1
   elif [[ "$OS" == "Fedora" ]]
   then
-    if [[ $OSRelease -gt 21 ]]
-    then
-      chroot $rootfs bash -c 'dnf -y update || exit -1' || error=1
-    else
-      chroot $rootfs bash -c 'yum -y update || exit -1' || error=1
-    fi
+    (lxc-attach -n $name -- dnf -y update ) || error=1
   elif [[ "$OS" == "Ubuntu" ]]
   then
     chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
