@@ -50,7 +50,7 @@ else
     sed "s/HOSTIP/$HostIP/g" | \
     sed "s/HOSTPORT/$port/g" | \
     sed "s/CONTAINERIP/$containerip/g" | \
-    sed "s/CONTAINERIDSUBID/$cidandsubid/g" | \
+    sed "s#CONTAINERIDSUBID#$cidandsubid#g" | \
     sed "s/CONTAINERID/$cid/g" | \
     sed "s/CONTAINERURL/$url/g" | \
     sed "s#SUBDIR#$subdir#g" | \
