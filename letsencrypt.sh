@@ -90,7 +90,7 @@ challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
   sed -i "s~return 302~#return 302~g" $domainconf
   sed -i "s~#location / { root .*/tmp/.*}~location / { root /var/lib/certs/tmp/$cid/challenge; }~g" $domainconf
   mkdir -p $challengedir
-  service nginx reload
+  systemctl reload nginx || exit -1
   error=0
   python acme_tiny.py --account-key ./account.key --csr ./$domain.csr --acme-dir $challengedir > ./$domain.crt || error=1
   rm -Rf /var/lib/certs/tmp/$cid
@@ -104,8 +104,13 @@ challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
     cat $domain.crt lets-encrypt-x3-cross-signed.pem > /var/lib/certs/$domain.crt
   fi
 
-  service nginx reload
+  systemctl reload nginx || exit -1
   cd -
+
+  if [ $error -eq 1 ]
+  then
+    exit -1
+  fi
 }
 
 if [ "$domain" == "all" ]
