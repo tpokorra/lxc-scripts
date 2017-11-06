@@ -23,8 +23,6 @@ port=443
 if [ -f /var/lib/certs/$url.crt ]; then
   generateCert=0
 else
-  touch /var/lib/certs/$url.crt
-  touch /var/lib/certs/$url.key
   generateCert=1
 fi
 
@@ -50,7 +48,7 @@ else
     sed "s/HOSTIP/$HostIP/g" | \
     sed "s/HOSTPORT/$port/g" | \
     sed "s/CONTAINERIP/$containerip/g" | \
-    sed "s/CONTAINERIDSUBID/$cidandsubid/g" | \
+    sed "s#CONTAINERIDSUBID#$cidandsubid#g" | \
     sed "s/CONTAINERID/$cid/g" | \
     sed "s/CONTAINERURL/$url/g" | \
     sed "s#SUBDIR#$subdir#g" | \
@@ -59,15 +57,16 @@ else
 fi
 if [ $generateCert -eq 1 ]
 then
-  # disable ssl for the moment, the certificate is not valid yet
+  # disable ssl for the moment, there is no certificate yet
   sed -i "s/ssl/#ssl/g" /etc/nginx/conf.d/$cid-$url.conf
+  sed -i "s/listen 443/#listen 443/g" /etc/nginx/conf.d/$cid-$url.conf
 fi
 mkdir -p /var/log/nginx/log
-service nginx reload
-
+systemctl reload nginx
 if [ $generateCert -eq 1 ]
 then
   ./letsencrypt.sh $cid-$url || exit -1
   sed -i "s/#ssl/ssl/g" /etc/nginx/conf.d/$cid-$url.conf
-  service nginx reload
+  sed -i "s/#listen 443/listen 443/g" /etc/nginx/conf.d/$cid-$url.conf
+  systemctl reload nginx
 fi
