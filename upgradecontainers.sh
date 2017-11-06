@@ -13,7 +13,24 @@ errorsSender=$1
 errorsRecipient=$2
 
 echo "updating the host " `hostname -f`
-apt-get update && apt-get -y upgrade --force-yes
+rootfs=
+getOSOfContainer $rootfs
+if [[ "$OS" == "CentOS" ]]
+then
+  yum -y update
+elif [[ "$OS" == "Fedora" ]]
+then
+  dnf -y update
+elif [[ "$OS" == "Ubuntu" ]]
+then
+  apt-get update && apt-get -y upgrade --force-yes
+elif [[ "$OS" == "Debian" ]]
+then
+  apt-get update && apt-get -y upgrade --force-yes
+else
+  echo "unknown operating system in container " $container
+  exit -1
+fi
 
 errors=
 for d in /var/lib/lxc/*
