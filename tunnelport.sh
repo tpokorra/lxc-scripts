@@ -1,8 +1,9 @@
 #!/bin/bash
 if [ -z $2 ]; then
-  echo "call: $0 cid port"
+  echo "call: $0 cid port [hostport]"
   echo "eg: $0 3 80"
   echo "to drop a port use negative number: $0 3 -80"
+  echo "to specify a port directly: $0 120 6667 6667"
   exit
 fi
 
@@ -26,8 +27,13 @@ then
   remove=1 
 fi
 
-firstdigit=${port:0:1}
-hostport=$(($firstdigit * 1000 + $cid))
+if [ -z $3 ]
+then
+  firstdigit=${port:0:1}
+  hostport=$(($firstdigit * 1000 + $cid))
+else
+  hostport=$3
+fi
 
 # Ubuntu
 rules=/etc/iptables.rules
