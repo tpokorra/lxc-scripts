@@ -28,20 +28,9 @@ do
 
   name=`basename $d`
 
-  # version=getOSOfContainer
-  getOSOfContainer $rootfs
-
-  lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $name" | grep -v grep`
-  if [ -z "$lxcprocess" ]
+  if [[ -z "`lxc-ls --running $name`" ]]
   then
-    # on Fedora 22
-    lxcprocess=`ps xaf | grep "\[lxc monitor\] /var/lib/lxc $name" | grep -v grep`
-    if [ -z "$lxcprocess" ]
-    then
-      state="stopped"
-    else
-      state="running"
-    fi
+    state="stopped"
   else
     state="running"
   fi
