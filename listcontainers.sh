@@ -28,6 +28,9 @@ do
 
   name=`basename $d`
 
+  # version=getOSOfContainer
+  getOSOfContainer $rootfs
+
   if [[ -z "`lxc-ls --running $name`" ]]
   then
     state="stopped"
