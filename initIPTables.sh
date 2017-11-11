@@ -30,4 +30,5 @@ else
   iptables -I FORWARD -i virbr0 -j ACCEPT
   iptables -I FORWARD -o virbr0 -j ACCEPT
   iptables-save > /etc/sysconfig/iptables
+  firewall-cmd --runtime-to-permanent
 fi

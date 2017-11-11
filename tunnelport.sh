@@ -43,6 +43,14 @@ then
   rules=/etc/sysconfig/iptables
 fi
 
+# first save the iptables
+if [ -f /etc/network/if-post-down.d/iptablessave ]
+then
+  /etc/network/if-post-down.d/iptablessave
+else
+  iptables-save > $rules
+fi
+
 if [ $remove -eq 1 ]
 then
   if [ ! -z "`cat $rules | grep "to-destination ${guestip}:${port}"`" ]
@@ -65,5 +73,6 @@ then
   /etc/network/if-post-down.d/iptablessave
 else
   iptables-save > $rules
+  firewall-cmd --runtime-to-permanent
 fi
 
