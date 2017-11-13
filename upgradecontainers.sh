@@ -44,17 +44,10 @@ do
     continue
   fi
 
-  # lxc 1.x
-  lxcprocess=`ps xaf | grep "lxc-start" | grep " -n $container" | grep -v grep`
-  if [ -z "$lxcprocess" ]
+  if [[ -z "`lxc-ls --running $name`" ]]
   then
-    # lxc 2.x
-    lxcprocess=`ps xaf | grep "lxc $container" | grep -v grep`
-    if [ -z "$lxcprocess" ]
-    then
       # stopped. do not upgrade, potential problems with mysql updates etc.
       continue
-    fi
   fi
 
   echo
