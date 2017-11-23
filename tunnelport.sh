@@ -73,6 +73,10 @@ then
   /etc/network/if-post-down.d/iptablessave
 else
   iptables-save > $rules
-  firewall-cmd --runtime-to-permanent
+  systemctl status firewalld > /dev/null
+  if [ $? -eq 0 ]
+  then
+    # firewalld is running
+    firewall-cmd --runtime-to-permanent
+  fi
 fi
-
