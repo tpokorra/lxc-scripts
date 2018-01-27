@@ -61,6 +61,8 @@ function getOutwardInterface {
   if [ -f /etc/network/interfaces ]
   then
     interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
+  else
+    interface=`route|grep default | head -n 1 | awk '{print $8}'`
   fi
   echo $interface
 }
