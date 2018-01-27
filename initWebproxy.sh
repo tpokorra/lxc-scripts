@@ -26,6 +26,12 @@ else
   generateCert=1
 fi
 
+if [[ $NO_SSL == "yes" ]];
+then
+  generateCert=0
+  port=80
+fi
+
 if [ -z $3 ]; then
   cidandsubid=$cid
   subdir=
