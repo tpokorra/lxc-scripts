@@ -46,6 +46,10 @@ do
   fi
 
   IPv4=`cat /var/lib/lxc/$name/config | grep "lxc.network.ipv4=" | awk -F= '{ print $2 }' | awk -F/ '{ print $1 }'`
+  if [ -z $IPv4 ]; then
+    # lxc3
+    IPv4=`cat /var/lib/lxc/$name/config | grep "lxc.net.0.ipv4.address =" | awk -F= '{ print $2 }' | awk -F/ '{ print $1 }'`
+  fi
 
   if [[ "$show" == "all" || "$show" == "$state" ]]
   then

@@ -61,8 +61,15 @@ function getOutwardInterface {
   if [ -f /etc/network/interfaces ]
   then
     interface=`cat /etc/network/interfaces | grep "auto" | grep -v "auto lo" | awk '{ print $2 }'`
-  else
-    interface=`route|grep default | head -n 1 | awk '{print $8}'`
+  fi
+  if [ -z $interface ]
+  then
+    interface=`ip route|grep default | head -n 1 | awk '{print $8}'`
+  fi
+  if [ -z $interface ]
+  then
+    # Ubuntu Bionic
+    interface=`ip route|grep default | head -n 1 | awk '{print $5}'`
   fi
   echo $interface
 }
@@ -70,12 +77,12 @@ function getOutwardInterface {
 function getBridgeInterface {
   # interface can be lxcbr0 (Ubuntu) or virbr0 (Fedora)
   local interface=lxcbr0
-  local interfaces=`ifconfig | grep $interface`
+  local interfaces=`ip a | grep $interface`
   if [ -z "$interfaces" ]
   then
     interface=virbr0
   fi
-  local interfaces=`ifconfig | grep $interface`
+  local interfaces=`ip a | grep $interface`
   if [ -z "$interfaces" ]
   then
     return -1
@@ -86,11 +93,11 @@ function getBridgeInterface {
 function getIPOfInterface {
 interface=$1
   # Ubuntu
-  local HostIP=`ifconfig ${interface} | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
+  local HostIP=`ip a | grep ${interface} | grep "inet addr" | awk '{ print $2 }' | awk -F ':' '{ print $2 }'`
   if [ -z "$HostIP" ]
   then
-    # Fedora
-    HostIP=`ifconfig ${interface} | grep "inet " | awk '{ print $2 }'`
+    # Fedora, Ubuntu Bionic
+    HostIP=`ip a | grep ${interface} | grep "inet " | awk '{ print $2 }' | awk -F '/' '{ print $1 }'`
   fi
   if [ -z "$HostIP" ]
   then

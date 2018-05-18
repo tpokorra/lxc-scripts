@@ -67,17 +67,30 @@ echo "GATEWAY=$bridgeAddress" >> $networkfile
 echo "NETMASK=255.255.255.0" >> $networkfile
 echo "NETWORK=$networkAddress.0" >> $networkfile
 echo "nameserver $bridgeAddress" >  $rootfs_path/etc/resolv.conf
-sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
-echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+network="lxc.network"
+if [ -z "`cat $rootfs_path/../config | grep '$network.link'`" ]
+then
+  # lxc 3
+  network="lxc.net.0"
+fi
+
+sed -i "s/$network.link = lxcbr0/$network.link = $bridgeInterface/g" $rootfs_path/../config
+if [[ "$network" == "lxc.network" ]]; then
+  echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+else
+  echo "$network.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
+fi
 #echo "lxc.network.ipv4.gateway=$networkaddress.1" >> $rootfs_path/../config
 echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
 
 if [ "$release" == "7" ]
 then
-  echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
+  if [[ "$network" == "lxc.network" ]]; then
+    echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
 
-  # see http://serverfault.com/questions/658052/systemd-journal-in-debian-jessie-lxc-container-eats-100-cpu
-  echo "lxc.kmsg = 0" >> $rootfs_path/../config
+    # see http://serverfault.com/questions/658052/systemd-journal-in-debian-jessie-lxc-container-eats-100-cpu
+    echo "lxc.kmsg = 0" >> $rootfs_path/../config
+  fi
   sed -i "s/ConditionPathExists/#ConditionPathExists/g" $rootfs_path/lib/systemd/system/getty@.service
   # see https://wiki.archlinux.org/index.php/Lxc-systemd
   echo "lxc.autodev = 1" >> $rootfs_path/../config
@@ -92,18 +105,6 @@ cd $rootfs_path/etc; rm -f localtime; ln -s ../usr/share/zoneinfo/Europe/Berlin 
 
 # yum: keep the cache
 sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
-
-if [ "$release" == "5" ]
-then
-  for f in $rootfs_path/etc/yum.repos.d/*.repo
-  do
-    sed -i 's/Source/SRPMS/g' $f
-  done
-
-  # make sure we only install rpm packages for the specified architecture.
-  # see https://blog.nexcess.net/2012/07/19/64-bit-centos-installing-32-bit-packages/
-  echo "multilib_policy=best" >> $rootfs_path/etc/yum.conf
-fi
 
 # install openssh-server
 chroot $rootfs_path yum -y install openssh-server

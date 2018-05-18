@@ -11,12 +11,17 @@ SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
 interface=$(getOutwardInterface)
+echo "outward interface:" $interface
 HostIP=$(getIPOfInterface $interface)
+echo "outward IP address:" $HostIP
 interfaceBridge=$(getBridgeInterface)
+echo "bridge interface:" $interfaceBridge
 bridgeAddress=$(getIPOfInterface $interfaceBridge)
+echo "bridge address:" $bridgeAddress
 
 cid=$1
 guestip=${bridgeAddress:0: -2}.$cid
+echo "guestip: "$guestip
 port=$2
 remove=0
 
