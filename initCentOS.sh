@@ -76,7 +76,7 @@ fi
 
 sed -i "s/$network.link = lxcbr0/$network.link = $bridgeInterface/g" $rootfs_path/../config
 if [[ "$network" == "lxc.network" ]]; then
-  echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+  echo "$network.ipv4="$IPv4"/24" >> $rootfs_path/../config
 else
   echo "$network.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 fi

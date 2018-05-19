@@ -50,9 +50,21 @@ cat $rootfs_path/etc/hosts | grep -v $name > $rootfs_path/etc/hosts.new
 mv $rootfs_path/etc/hosts.new $rootfs_path/etc/hosts
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
-sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
-echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-echo "lxc.network.ipv4.gateway="$bridgeAddress >> $rootfs_path/../config
+
+network="lxc.network"
+if [ -z "`cat $rootfs_path/../config | grep '$network.link'`" ]
+then
+  # lxc 3
+  network="lxc.net.0"
+fi
+
+sed -i "s/$network.link = lxcbr0/$network.link = $bridgeInterface/g" $rootfs_path/../config
+if [[ "$network" == "lxc.network" ]]; then
+  echo "$network.ipv4="$IPv4"/24" >> $rootfs_path/../config
+else
+  echo "$network.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
+fi
+echo "$network.ipv4.gateway="$bridgeAddress >> $rootfs_path/../config
 echo "nameserver "$bridgeAddress >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
