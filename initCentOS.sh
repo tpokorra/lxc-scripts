@@ -68,7 +68,7 @@ echo "NETMASK=255.255.255.0" >> $networkfile
 echo "NETWORK=$networkAddress.0" >> $networkfile
 echo "nameserver $bridgeAddress" >  $rootfs_path/etc/resolv.conf
 network="lxc.network"
-if [ -z "`cat $rootfs_path/../config | grep '$network.link'`" ]
+if [ -z "`cat $rootfs_path/../config | grep "$network.link"`" ]
 then
   # lxc 3
   network="lxc.net.0"

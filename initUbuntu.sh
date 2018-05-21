@@ -52,7 +52,7 @@ echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
 
 network="lxc.network"
-if [ -z "`cat $rootfs_path/../config | grep '$network.link'`" ]
+if [ -z "`cat $rootfs_path/../config | grep "$network.link"`" ]
 then
   # lxc 3
   network="lxc.net.0"
