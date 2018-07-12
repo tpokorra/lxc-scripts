@@ -23,10 +23,10 @@ then
   dnf -y update
 elif [[ "$OS" == "Ubuntu" ]]
 then
-  apt-get update && apt-get -y upgrade --force-yes
+  apt-get update && apt-get -y upgrade
 elif [[ "$OS" == "Debian" ]]
 then
-  apt-get update && apt-get -y upgrade --force-yes
+  apt-get update && apt-get -y upgrade
 else
   echo "unknown operating system in container " $container
   exit -1
@@ -68,10 +68,10 @@ do
     (lxc-attach -n $name -- dnf -y update ) || error=1
   elif [[ "$OS" == "Ubuntu" ]]
   then
-    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
+    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade || exit -1' || error=1
   elif [[ "$OS" == "Debian" ]]
   then
-    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade --force-yes || exit -1' || error=1
+    chroot $rootfs bash -c 'LANG=C; apt-get update && apt-get -y upgrade || exit -1' || error=1
   else
     echo "unknown operating system in container " $container
     exit -1
