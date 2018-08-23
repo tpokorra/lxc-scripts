@@ -3,7 +3,6 @@ server {
     listen HOSTIP:80;
     server_name CONTAINERURL;
     return 302 https://$host$request_uri;
-    #location / { root /var/lib/certs/tmp/CONTAINERPORT/challenge; }
 }
 
 server {
@@ -27,6 +26,8 @@ server {
 
     client_max_body_size 30M;
  
+    #location /.well-known/acme-challenge/ { root /var/lib/certs/tmp/CONTAINERPORT/challenge; }
+
     ## send request back to container ##
     location / {
      proxy_pass  http://CONTAINERIP:CONTAINERPORT/SUBDIR;
