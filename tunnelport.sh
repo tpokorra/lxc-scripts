@@ -64,7 +64,7 @@ then
     echo "dropping rule ${HostIP}:$hostport => ${guestip}:${port}"
   fi
 else
-  if [ ! -z "`cat $rules | grep "dport $hostport "`" ]
+  if [ ! -z "`cat $rules | grep "PREROUTING" | grep "dport $hostport "`" ]
   then
     echo "there is already a mapping for port " $hostport
   else
