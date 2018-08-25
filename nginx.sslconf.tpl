@@ -9,8 +9,8 @@ server {
     listen 443 ssl;
     server_name  CONTAINERURL;
  
-    ssl_certificate /var/lib/certs/CONTAINERURL.crt;  
-    ssl_certificate_key /var/lib/certs/CONTAINERURL.key;
+    ssl_certificate /var/lib/certs/CERTURL.crt;
+    ssl_certificate_key /var/lib/certs/CERTURL.key;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;  # don't use SSLv3 ref: POODLE
 

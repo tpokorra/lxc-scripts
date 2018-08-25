@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $2 ]; then
-  echo "call: $0 cid url [subdir]"
+  echo "call: $0 cid url [subdir] [port]"
   echo "eg: $0 3 www.example.org customer1"
   exit
 fi
@@ -20,8 +20,13 @@ containerip=${bridgeAddress:0: -2}.$cid
 url=$2
 
 port=443
+certurl=$url
+wildcardurl="wildcard".$( cut -d '.' -f 2- <<< "$url" )
 if [ -f /var/lib/certs/$url.crt ]; then
   generateCert=0
+elif [ -f /var/lib/certs/$wildcardurl.crt ]; then
+  generateCert=0
+  certurl=$wildcardurl
 else
   generateCert=1
 fi
@@ -40,6 +45,13 @@ else
   subdir="$3/"
 fi
 
+subport=80
+if [ ! -z $4 ]; then
+  cidandsubid=$cid$4
+  subdir=
+  subport=$4
+fi
+
 if [ $port -eq 80 ]; then 
   cat nginx.conf.tpl | \
     sed "s/HOSTIP/$HostIP/g" | \
@@ -47,7 +59,7 @@ if [ $port -eq 80 ]; then
     sed "s/CONTAINERIP/$containerip/g" | \
     sed "s/CONTAINERID/$cid/g" | \
     sed "s/CONTAINERURL/$url/g" | \
-    sed "s/CONTAINERPORT/80/g" \
+    sed "s/CONTAINERPORT/$subport/g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 else
   cat nginx.sslconf.tpl | \
@@ -57,8 +69,9 @@ else
     sed "s#CONTAINERIDSUBID#$cidandsubid#g" | \
     sed "s/CONTAINERID/$cid/g" | \
     sed "s/CONTAINERURL/$url/g" | \
+    sed "s/CERTURL/$certurl/g" | \
     sed "s#SUBDIR#$subdir#g" | \
-    sed "s/CONTAINERPORT/80/g" \
+    sed "s#CONTAINERPORT#$subport#g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 fi
 if [ $generateCert -eq 1 ]
