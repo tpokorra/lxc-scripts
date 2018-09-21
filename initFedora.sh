@@ -3,16 +3,17 @@
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
+release="28"
+
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is 27> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is $release> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-fedora-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
 distro="fedora"
-release="27"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]
@@ -39,7 +40,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [ $release -ge 28 ]
+if [ $release -ge 29 ]
 then
   if [[ "$arch" == "amd64" ]]
   then
