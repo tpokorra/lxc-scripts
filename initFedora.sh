@@ -3,7 +3,7 @@
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
-release="28"
+release="29"
 
 if [ -z $2 ]
 then
@@ -46,7 +46,7 @@ then
   then
     arch="x86_64"
   fi
-  # there is no template available at https://jenkins.linuxcontainers.org/view/LXC/view/LXC%20templates/job/lxc-template-fedora/
+  # there is no template available at https://jenkins.linuxcontainers.org/job/lxc-template-fedora/
   LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
