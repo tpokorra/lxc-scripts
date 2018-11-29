@@ -88,6 +88,8 @@ challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
   openssl genrsa 4096 > $domain.key
   openssl req -new -sha256 -key $domain.key -subj "/CN=$domain" > $domain.csr
   sed -i "s~#location /.well-known/acme-challenge~location /.well-known/acme-challenge~g" $domainconf
+  sed -i "s~listen 80~#listen 80~g" $domainconf
+  sed -i "s~return 302~#return 302~g" $domainconf
   cat $domainconf | grep "location /.well-known" || sed -i "s~location / ~location /.well-known/acme-challenge/ { root /var/lib/certs/tmp/$cid/challenge; }\n    location / ~g" $domainconf
   mkdir -p $challengedir
   systemctl reload nginx || exit -1
@@ -96,6 +98,8 @@ challengedir=/var/lib/certs/tmp/$cid/challenge/.well-known/acme-challenge/
   rm -Rf /var/lib/certs/tmp/$cid
 
   sed -i "s~location /.well-known/acme-challenge/~#location /.well-known/acme-challenge/~g" $domainconf
+  sed -i "s~#listen 80~listen 80~g" $domainconf
+  sed -i "s~#return 302~return 302~g" $domainconf
 
   if [ $error -ne 1 ]
   then
