@@ -124,12 +124,15 @@ if [ "$domain" == "all" ]
 then
   for f in /etc/nginx/conf.d/*
   do
-    if [ "`cat $f | grep challenge`" != "" ]
+    if [ -f $f ]
     then
-      need_new_certificate $f
-      if [ $need_new -eq 1 ]
+      if [ "`cat $f | grep ssl`" != "" ]
       then
-        new_letsencrypt_certificate $f
+        need_new_certificate $f
+        if [ $need_new -eq 1 ]
+        then
+          new_letsencrypt_certificate $f
+        fi
       fi
     fi
   done
