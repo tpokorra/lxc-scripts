@@ -3,6 +3,7 @@
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
+distro="fedora"
 release="29"
 
 if [ -z $2 ]
@@ -13,7 +14,6 @@ then
 fi
 name=$1
 cid=$2
-distro="fedora"
 if [ ! -z $3 ]
 then
   if [[ "$3" != "rawhide" ]]

@@ -2,16 +2,17 @@
 SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
+distro="debian"
+release="stretch"
+
 if [ -z $2 ]
 then
-  echo "please call $0 <name of new container> <cid> <release, default is stretch> <arch, default is amd64> <autostart, default is 1>"
+  echo "please call $0 <name of new container> <cid> <release, default is $release> <arch, default is amd64> <autostart, default is 1>"
   echo "   eg. $0 50-debian-mymachine 50"
   exit 1
 fi
 name=$1
 cid=$2
-distro="debian"
-release="stretch"
 if [ ! -z $3 ]
 then
   release=$3
