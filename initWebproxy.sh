@@ -74,18 +74,9 @@ else
     sed "s#CONTAINERPORT#$subport#g" \
     > /etc/nginx/conf.d/$cid-$url.conf
 fi
-if [ $generateCert -eq 1 ]
-then
-  # disable ssl for the moment, there is no certificate yet
-  sed -i "s/ssl/#ssl/g" /etc/nginx/conf.d/$cid-$url.conf
-  sed -i "s/listen 443/#listen 443/g" /etc/nginx/conf.d/$cid-$url.conf
-fi
 mkdir -p /var/log/nginx/log
-systemctl reload nginx
 if [ $generateCert -eq 1 ]
 then
   ./letsencrypt.sh $cid-$url || exit -1
-  sed -i "s/#ssl/ssl/g" /etc/nginx/conf.d/$cid-$url.conf
-  sed -i "s/#listen 443/listen 443/g" /etc/nginx/conf.d/$cid-$url.conf
-  systemctl reload nginx
 fi
+systemctl reload nginx
