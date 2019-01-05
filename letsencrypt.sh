@@ -47,6 +47,8 @@ then
   return
 fi
 
+# TODO does the domain resolve to this host?
+
 enddate=`openssl x509 -enddate -noout -in $crtfile | cut -d= -f2-`
 # show date in readable format, eg. 2016-07-03
 #date -d "$enddate" '+%F'
