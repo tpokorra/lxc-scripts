@@ -111,11 +111,14 @@ FINISH
   then
     cp -f $domain.key /var/lib/certs/$domain.key
     cat $domain.crt lets-encrypt-x3-cross-signed.pem > /var/lib/certs/$domain.crt
-    mkdir -p /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs
-    cp -f $domain.key /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.key
-    cp -f $domain.crt /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.crt
-    cp -f /var/lib/certs/$domain.crt /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.bundle.pem
-    cp -f lets-encrypt-x3-cross-signed.pem /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.ca-chain.pem
+    if [ -d /var/lib/lxc/$cid-$domain ]
+    then
+      mkdir -p /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs
+      cp -f $domain.key /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.key
+      cp -f $domain.crt /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.crt
+      cp -f /var/lib/certs/$domain.crt /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.bundle.pem
+      cp -f lets-encrypt-x3-cross-signed.pem /var/lib/lxc/$cid-$domain/rootfs/var/lib/certs/$cid-$domain.ca-chain.pem
+    fi
   fi
 
   systemctl reload nginx || exit -1
