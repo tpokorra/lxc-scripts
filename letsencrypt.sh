@@ -102,6 +102,7 @@ FINISH
   mkdir -p $challengedir
   cat $domainconf
   systemctl reload nginx || exit -1
+  sleep 3
   error=0
   python acme_tiny.py --account-key ./account.key --csr ./$domain.csr --acme-dir $challengedir > ./$domain.crt || error=1
   rm -Rf /var/lib/certs/tmp/$cid
