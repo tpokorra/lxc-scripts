@@ -109,6 +109,7 @@ sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 
 # install openssh-server
 lxc-start -d -n $name
+sleep 5
 lxc-attach -n $name -- yum -y install openssh-server && systemctl start sshd
 lxc-stop -n $name
 
