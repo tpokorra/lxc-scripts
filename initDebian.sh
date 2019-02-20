@@ -31,6 +31,7 @@ fi
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/network/interfaces
+resolvfile=${rootfs_path}/etc/resolv.conf
 bridgeInterface=$(getBridgeInterface)
 bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
@@ -44,9 +45,10 @@ ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
-sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
-echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-echo "lxc.network.ipv4.gateway="$bridgeAddress >> $rootfs_path/../config
+sed -i "s/^nameserver.*/nameserver $bridgeAddress/g" $resolvfile
+sed -i "s/lxc.net.0.link = lxcbr0/lxc.net.0.link = $bridgeInterface/g" $rootfs_path/../config
+echo "lxc.net.0.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
+echo "lxc.net.0.ipv4.gateway = "$bridgeAddress >> $rootfs_path/../config
 
 if [ "$release" == "jessie" ]
 then
