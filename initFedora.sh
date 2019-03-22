@@ -40,13 +40,14 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [ $release -ge 29 ]
+if [ $release -ge 30 ]
 then
   if [[ "$arch" == "amd64" ]]
   then
     arch="x86_64"
   fi
   # there is no template available at https://jenkins.linuxcontainers.org/job/lxc-template-fedora/
+  export FEDORA_RELEASE_DEFAULT=$release
   LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
@@ -103,13 +104,7 @@ else
 fi
 
 sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
-echo "lxc.network.ipv4="$IPv4"/24" >> $rootfs_path/../config
-# fix a problem with AppArmor. otherwise you get a SEGV
-echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
-# fix a problem with seccomp. Machine does not start otherwise
-echo "lxc.seccomp =" >> $rootfs_path/../config
-# fix some problems with journald
-echo "lxc.kmsg = 0" >> $rootfs_path/../config
+echo "lxc.net.0.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 echo "lxc.autodev = 1" >> $rootfs_path/../config
 echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
 
