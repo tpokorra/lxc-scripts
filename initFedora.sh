@@ -50,6 +50,7 @@ then
   export FEDORA_RELEASE_DEFAULT=$release
   LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
+  export FEDORA_RELEASE_DEFAULT=$release
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
 
