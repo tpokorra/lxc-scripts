@@ -35,6 +35,8 @@ fi
 rootfs_path=/var/lib/lxc/$name/rootfs
 config_path=/var/lib/lxc/$name
 networkfile=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-eth0
+resolvfile=${rootfs_path}/etc/resolv.conf
+routefile=${rootfs_path}/etc/sysconfig/network-scripts/route-eth0
 bridgeInterface=$(getBridgeInterface)
 bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
@@ -50,21 +52,18 @@ then
   export FEDORA_RELEASE_DEFAULT=$release
   LANG=C lxc-create -t fedora -n $name -- -R $release -a $arch || exit 1
 else
+  export FEDORA_RELEASE_DEFAULT=$release
   lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 fi
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
-if [ ! -f $rootfs_path/etc/sysconfig/network ]
-then
-  cat > $rootfs_path/etc/sysconfig/network << FINISH
+cat > $rootfs_path/etc/sysconfig/network << FINISH
 NETWORKING=yes
 HOSTNAME=$name
 BOOTPROTO=static
+GATEWAY=$bridgeAddress
 FINISH
-else
-  sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
-fi
 
 if [[ "$http_proxy" != "" ]]
 then
@@ -103,10 +102,13 @@ else
   echo "DNS1=$bridgeAddress" >>  $networkfile
 fi
 
+echo "nameserver $bridgeAddress" > $resolvfile
+
 sed -i "s/lxc.network.link = lxcbr0/lxc.network.link = $bridgeInterface/g" $rootfs_path/../config
 echo "lxc.net.0.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 echo "lxc.autodev = 1" >> $rootfs_path/../config
 echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
+echo "lxc.apparmor.profile = unconfined" >> $rootfs_path/../config
 
 echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
 

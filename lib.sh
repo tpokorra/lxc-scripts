@@ -66,7 +66,8 @@ function getOutwardInterface {
   then
     interface=`ip route|grep default | head -n 1 | awk '{print $8}'`
   fi
-  if [ -z $interface ]
+  bionic=`cat /etc/lsb-release  | grep bionic`
+  if [ ! -z $bionic ]
   then
     # Ubuntu Bionic
     interface=`ip route|grep default | head -n 1 | awk '{print $5}'`

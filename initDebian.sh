@@ -3,7 +3,7 @@ SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
 distro="debian"
-release="stretch"
+release="buster"
 
 if [ -z $2 ]
 then
@@ -37,15 +37,13 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-# some problems with the downloaded images on CentOS7 host
-#lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
-lxc-create -t debian -n $name -- -r $release -a $arch || exit 1
+lxc-create -t download -n $name -- -d $distro -r $release -a $arch || exit 1
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
 echo $IPv4 $name >> $rootfs_path/etc/hosts
 sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
-sed -i "s/^nameserver.*/nameserver $bridgeAddress/g" $resolvfile
+echo "nameserver $bridgeAddress" > $resolvfile
 sed -i "s/lxc.net.0.link = lxcbr0/lxc.net.0.link = $bridgeInterface/g" $rootfs_path/../config
 echo "lxc.net.0.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 echo "lxc.net.0.ipv4.gateway = "$bridgeAddress >> $rootfs_path/../config
@@ -63,7 +61,7 @@ then
   echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
 fi
 
-# mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
+# mount apt cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
 $SCRIPTSPATH/initMount.sh $hostpath $name "/var/cache/apt"
 
