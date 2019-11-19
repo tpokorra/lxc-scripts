@@ -4,7 +4,7 @@ SCRIPTSPATH=`dirname ${BASH_SOURCE[0]}`
 source $SCRIPTSPATH/lib.sh
 
 distro="fedora"
-release="30"
+release="31"
 
 if [ -z $2 ]
 then
@@ -42,7 +42,7 @@ bridgeAddress=$(getIPOfInterface $bridgeInterface)
 networkAddress=$(echo $bridgeAddress | awk -F '.' '{ print $1"."$2"."$3 }')
 IPv4=$networkAddress.$cid
 
-if [ $release -ge 31 ]
+if [ $release -ge 32 ]
 then
   if [[ "$arch" == "amd64" ]]
   then
