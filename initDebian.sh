@@ -59,6 +59,10 @@ then
   echo "lxc.autodev = 1" >> $rootfs_path/../config
 
   echo "lxc.cap.drop = mknod" >> $rootfs_path/../config
+elif [ "$release" == "buster" ]
+then
+  # to fix issues with mariadb service inside the container
+  echo "lxc.apparmor.profile = unconfined" >> $rootfs_path/../config
 fi
 
 # mount apt cache repo, to avoid redownloading stuff when reinstalling the machine
