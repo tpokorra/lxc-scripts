@@ -53,7 +53,7 @@ echo $IPv4 $name >> $rootfs_path/etc/hosts
 if [ -f $networkfile ]; then
   sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
 fi
-networkfile=/etc/netplan/10-lxc.yaml
+networkfile=$rootfs_path/etc/netplan/10-lxc.yaml
 if [ -f $networkfile ]; then
   sed -i "s#eth0:.*#eth0: { dhcp: no, addresses: [$IPv4/24], gateway4: $bridgeAddress, nameservers: [$bridgeAddress] }#g" $networkfile
 fi
