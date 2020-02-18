@@ -50,7 +50,13 @@ ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 cat $rootfs_path/etc/hosts | grep -v $name > $rootfs_path/etc/hosts.new
 mv $rootfs_path/etc/hosts.new $rootfs_path/etc/hosts
 echo $IPv4 $name >> $rootfs_path/etc/hosts
-sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
+if [ -f $networkfile ]; then
+  sed -i 's/^iface eth0 inet.*/iface eth0 inet static/g' $networkfile
+fi
+networkfile=/etc/netplan/10-lxc.yaml
+if [ -f $networkfile ]; then
+  sed -i "s#eth0:.*#eth0: { dhcp: no, addresses: [$IPv4/24], gateway4: $bridgeAddress, nameservers: [$bridgeAddress] }#g" $networkfile
+fi
 
 network="lxc.network"
 if [ -z "`cat $rootfs_path/../config | grep "$network.link"`" ]
@@ -66,7 +72,11 @@ else
   echo "$network.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 fi
 echo "$network.ipv4.gateway="$bridgeAddress >> $rootfs_path/../config
-echo "nameserver "$bridgeAddress >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
+if [ -f $rootfs_path/etc/resolv.conf ]; then
+  cat "nameserver "$bridgeAddress >> $rootfs_path/etc/resolv.conf
+else
+  echo "nameserver "$bridgeAddress >> $rootfs_path/etc/resolvconf/resolv.conf.d/head
+fi
 
 # mount yum cache repo, to avoid redownloading stuff when reinstalling the machine
 hostpath="/var/lib/repocache/$cid/$distro/$release/$arch/var/cache/apt"
