@@ -55,7 +55,7 @@ if [ -f $networkfile ]; then
 fi
 networkfile=$rootfs_path/etc/netplan/10-lxc.yaml
 if [ -f $networkfile ]; then
-  sed -i "s#eth0:.*#eth0: { dhcp: no, addresses: [$IPv4/24], gateway4: $bridgeAddress, nameservers: [$bridgeAddress] }#g" $networkfile
+  sed -i "s#eth0:.*#eth0: { dhcp4: no, addresses: [$IPv4/24], gateway4: $bridgeAddress, nameservers: {addresses: [$bridgeAddress] }}#g" $networkfile
 fi
 
 network="lxc.network"
