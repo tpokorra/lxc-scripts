@@ -61,13 +61,17 @@ fi
 
 ssh-keygen -f "/root/.ssh/known_hosts" -R $IPv4
 
+if [ 0 -eq 1 ]; then
 sed -i "s/HOSTNAME=.*/HOSTNAME=$name/g" $rootfs_path/etc/sysconfig/network
-sed -i 's/^BOOTPROTO=*/BOOTPROTO=static/g' $networkfile
+sed -i 's/^BOOTPROTO=.*/BOOTPROTO=static/g' $networkfile
+sed -i 's/^MTU=/#MTU=/g' $networkfile
 echo "IPADDR=$IPv4" >> $networkfile
 echo "GATEWAY=$bridgeAddress" >> $networkfile
 echo "NETMASK=255.255.255.0" >> $networkfile
 echo "NETWORK=$networkAddress.0" >> $networkfile
+echo "DNS1=$bridgeAddress" >> $networkfile
 echo "nameserver $bridgeAddress" >  $rootfs_path/etc/resolv.conf
+fi
 network="lxc.network"
 if [ -z "`cat $rootfs_path/../config | grep "$network.link"`" ]
 then
@@ -82,9 +86,10 @@ else
   echo "$network.ipv4.address = "$IPv4"/24" >> $rootfs_path/../config
 fi
 #echo "lxc.network.ipv4.gateway=$networkaddress.1" >> $rootfs_path/../config
+sed -i "s~#plugins=.*~plugins=ifcfg-rh~g" $rootfs_path/etc/NetworkManager/NetworkManager.conf
 echo "127.0.0.1 "$name" localhost" > $rootfs_path/etc/hosts
 
-if [ "$release" == "7" ]
+if [[ "$release" == "7" || "$release" == "8" ]]
 then
   if [[ "$network" == "lxc.network" ]]; then
     echo "lxc.aa_profile = unconfined" >> $rootfs_path/../config
@@ -110,6 +115,33 @@ sed -i 's/^keepcache=0/keepcache=1/g' $rootfs_path/etc/yum.conf
 # install openssh-server
 lxc-start -d -n $name
 sleep 5
+if [ 1 -eq 1 ]; then
+#sed -i 's/^ONBOOT=.*/ONBOOT=no/g' $networkfile
+# see conf in /etc/NetworkManager/system-connections/eth0.nmconnection
+lxc-attach -n $name -- systemctl restart NetworkManager
+#lxc-attach -n $name -- nmcli connection delete eth0
+#lxc-attach -n $name -- nmcli con add type ethernet con-name eth0 ifname eth0 ip4 $IPv4/24 gw4 $bridgeAddress
+lxc-attach -n $name -- nmcli con mod eth0 ipv4.address "$IPv4"
+lxc-attach -n $name -- nmcli con mod eth0 ipv4.method manual
+lxc-attach -n $name -- nmcli con mod eth0 ipv4.gateway "$bridgeAddress"
+lxc-attach -n $name -- nmcli con mod eth0 ipv4.dns "$bridgeAddress"
+#lxc-attach -n $name -- nmcli con mod eth0 autoconnect no
+lxc-attach -n $name -- nmcli con mod eth0 autoconnect yes
+lxc-attach -n $name -- cat /etc/sysconfig/network-scripts/ifcfg-eth0
+lxc-attach -n $name -- cat /etc/NetworkManager/system-connections/eth0.nmconnection
+
+lxc-attach -n $name -- nmcli connection show # Problem: immer noch ist eth0 an die falsche connection gebunden
+lxc-attach -n $name -- nmcli dev status
+lxc-attach -n $name -- nmcli connection up eth0
+
+# wie kann ich die Konfiguration speichern? 
+#lxc-attach -n $name -- nmcli con mod eth0 save
+
+#lxc-attach -n $name -- nmcli con mod eth0 autoconnect yes
+#lxc-attach -n $name -- ifup eth0
+lxc-attach -n $name -- ip a
+fi
+#lxc-attach -n $name -- ifup eth0
 lxc-attach -n $name -- yum -y install openssh-server && systemctl start sshd
 lxc-stop -n $name
 
