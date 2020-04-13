@@ -5,16 +5,20 @@ source $SCRIPTSPATH/lib.sh
 # version,OS,OSRelease=getOSOfContainer
 getOSOfContainer /
 
-# There is a problem with Fedora containers, that systemd cannot be upgraded inside the container.
-# fix for LXC 1.x
-sed -i "s/^lxc.cap.drop = setfcap$/#lxc.cap.drop = setfcap/g" /usr/share/lxc/config/fedora.common.conf
-# fix for LXC 2.x
-sed -i "s/^lxc.cap.drop = setfcap /lxc.cap.drop = /g" /usr/share/lxc/config/fedora.common.conf
+if [ -f /usr/share/lxc/config/fedora.common.conf ]; then
+  # There is a problem with Fedora containers, that systemd cannot be upgraded inside the container.
+  # fix for LXC 1.x
+  sed -i "s/^lxc.cap.drop = setfcap$/#lxc.cap.drop = setfcap/g" /usr/share/lxc/config/fedora.common.conf
+  # fix for LXC 2.x
+  sed -i "s/^lxc.cap.drop = setfcap /lxc.cap.drop = /g" /usr/share/lxc/config/fedora.common.conf
+fi
 
-# fix a problem for CentOS7 containers. see https://github.com/lxc/lxc/commit/a4aed378f802ad9caf74ee1c20dc74a6f9d7ca17
-# also remove setfcap, see https://bugzilla.redhat.com/show_bug.cgi?id=648654#c31 (httpd did not install for Kolab on CentOS7)
-sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap setpcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
-sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
+if [ -f /usr/share/lxc/config/centos.common.conf ]; then
+  # fix a problem for CentOS7 containers. see https://github.com/lxc/lxc/commit/a4aed378f802ad9caf74ee1c20dc74a6f9d7ca17
+  # also remove setfcap, see https://bugzilla.redhat.com/show_bug.cgi?id=648654#c31 (httpd did not install for Kolab on CentOS7)
+  sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap setpcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
+  sed -i "s/^lxc.cap.drop = mac_admin mac_override setfcap/lxc.cap.drop = mac_admin mac_override/g" /usr/share/lxc/config/centos.common.conf
+fi
 
 # create a key pair for ssh into the container as root
 if [ ! -f /root/.ssh/id_rsa ]
@@ -38,6 +42,19 @@ fi
 if [ ! -f /usr/bin/lc -a -f /usr/share/lxc-scripts/listcontainers.sh ]
 then
   ln -s /usr/share/lxc-scripts/listcontainers.sh /usr/bin/lc
+fi
+
+if [[ "$OS" == "Fedora" ]]
+then
+  # see https://fedoraproject.org/wiki/LXC
+  echo 'USE_LXC_BRIDGE="true"' >> /etc/sysconfig/lxc-net
+  systemctl enable --now lxc-net.service
+  systemctl restart lxc-net
+
+  # see https://fedoraproject.org/wiki/Common_F31_bugs#Docker_package_no_longer_available_and_will_not_run_by_default_.28due_to_switch_to_cgroups_v2.29
+  dnf -y install grubby
+  grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+  echo "Please restart the host for the changes to the kernel parameters to take effect!"
 fi
 
 if [[ "$OS" == "CentOS" || "$OS" == "Fedora" ]]
