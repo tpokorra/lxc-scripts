@@ -65,6 +65,9 @@ function getOutwardInterface {
   if [ -z $interface ]
   then
     interface=`ip route|grep default | head -n 1 | awk '{print $8}'`
+    if [[ "$interface" -eq "onlink" ]]; then
+      interface=""
+    fi
   fi
   if [ -z $interface ]
   then
