@@ -44,6 +44,8 @@ IPv4=$networkAddress.$cid
 
 if [ $release -ge 32 ]
 then
+  echo "Fedora >= 32 does not work with LXC, use LXD instead"
+  exit -1
   if [[ "$arch" == "amd64" ]]
   then
     arch="x86_64"
