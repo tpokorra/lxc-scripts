@@ -8,7 +8,7 @@ Installation
 
 * Either clone this code repository: `cd ~; git clone https://github.com/tpokorra/lxc-scripts.git scripts`
 * Or install a package from LBS: https://lbs.solidcharity.com/package/tpokorra/lbs/lxc-scripts
- * There is a lxc-scripts package for CentOS7, Fedora 22, and Ubuntu 14.04, with instructions how to install the package
+ * There is a lxc-scripts package for CentOS7, and Ubuntu 20.04, with instructions how to install the package
  * To make things easier, I usually create a symbolic link: `cd ~; ln -s /usr/share/lxc-scripts scripts`
 
 After installing the package, run these scripts for initializing the firewall and some fixes for the LXC templates:
@@ -20,10 +20,10 @@ CheatSheet for my LXC scripts
 ---------------------------------
 
 * Initialise the host IPTables so that they will be survive a reboot: `~/scripts/initIPTables.sh`
-* Small fixes to the LXC system for CentOS7 and Fedora containers, and create ssh keys: `~/scripts/initLXC.sh`
-* Create a container (with networking etc): `~/scripts/initFedora.sh $name $id`
- * Call the script without parameters to see additional parameters, eg to specify the version of the OS etc: `~/scripts/initFedora.sh`
- * There are scripts for creating Fedora, CentOS, Debian, and Ubuntu containers
+* Small fixes to the LXC system for CentOS7 containers, and create ssh keys: `~/scripts/initLXC.sh`
+* Create a container (with networking etc): `~/scripts/initCentOS.sh $name $id`
+ * Call the script without parameters to see additional parameters, eg to specify the version of the OS etc: `~/scripts/initCentOS.sh`
+ * There are scripts for creating CentOS, Debian, and Ubuntu containers
 * Containers are created in `/var/lib/lxc/$name`, see the file `config` and the directory `rootfs`
 * Start a container: `lxc-start --name $name`
 * Start a container without console: `lxc-start -d --name $name`
